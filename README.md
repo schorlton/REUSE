@@ -29,6 +29,8 @@ reuse-build [options] <reference_in> <index>
 
 -c = The reference sequences are given on the command line. I.e. <reference_in> is a comma-separated list of sequences rather than a list of FASTA files.
 
+-h = Hide (ie mask) k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest.
+
 -g = Compress index when saving to disk. May take longer to generate the index and load when searching.
 
 -h/--help = Print usage information and quit
