@@ -11,6 +11,8 @@ reuse -x hg38 -U input.fq -o filtered.fq
 
 -Optionally filter k-mers from the reference that match to a target dataset so as to reduce false positive filtering. For example, filter all viral k-mers from the human genome so as not to filter reads originating from viruses in the sample.
 
+-The database may be generated with alternative k-mer counters such as Jellyfish or KAnalyze as documented below. The advantages of reuse-build are that it is faster and more memory efficient, as it does not count k-mers, and it can mask k-mers.
+
 ### Usage:
 reuse-build [options] <reference_in> <index>
 
@@ -47,7 +49,7 @@ reuse [options] -x <index> {-1 <m1> -2 <m2> | -U <r> | --interleaved \<i\>\}
 
 ### Main arguments
 -x <index>
-The basename of the index for the reference dataset.
+The basename of the index for the reference dataset. This can either be generated with reuse-build (.db.gz) or with an alternative program for k-mer counting, such as Jellyfish, KAnalyze or others. K-mer count files in Jellyfish dump format/KAnalyze default output format (two column text file for both) may be compressed with gzip.
 
 -1 <m1>
 Comma-separated list of files containing mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m2>. Reads may be a mix of different lengths. If - is specified, reuse will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format.
