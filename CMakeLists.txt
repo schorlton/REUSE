@@ -3,4 +3,6 @@ project(REUSE)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(REUSE main.cpp cmdline.cpp common.cpp)
+
+add_executable(REUSE main.cpp ThreadQueue.cpp ThreadQueue.h cmdline.cpp common.cpp)
+
