@@ -12,7 +12,7 @@ CompressType parse_compress_type(char *text){
 	if(strcmp(text,"gzip")==0){
 		return CompressType::gzip;
 	}
-	else if(strcmp(text,"gzip")==0){
+	else if(strcmp(text,"bzip2")==0){
 		return CompressType::gzip;
 	}
 	else{
