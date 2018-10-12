@@ -8,8 +8,9 @@
 using Record = char*;
 using Queue = SharedQueue<Record>;
 
-//Filter thread interface declaration
+//Thread interface declaration
 void filter(Queue, Queue);
+void output(Queue);
 
 int main() {
     std::cerr << "Hello, World!" << std::endl;
@@ -20,6 +21,7 @@ int main() {
     Queue pending_records, output_records;
     std::vector<std::thread> thread_pool;
     thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
+    thread_pool.emplace(thread_pool.end(), output, output_records);
 
     //Read in records to queue
 
@@ -27,6 +29,7 @@ int main() {
     if (pending_records.size() > queue_limit) thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
 
     //Join thread pool
+    for (auto& thread : thread_pool) thread.join();
 
     //Output statistics
 
