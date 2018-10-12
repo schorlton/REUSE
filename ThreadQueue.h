@@ -18,10 +18,10 @@ class SharedQueue
         ~SharedQueue();
 
         T& front();
-        void pop_front();
+        void pop();
 
-        void push_back(const T& item);
-        void push_back(T&& item);
+        void push(const T &item);
+        void push(T &&item);
 
         int size();
         bool empty();

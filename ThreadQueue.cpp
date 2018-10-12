@@ -23,7 +23,7 @@ T& SharedQueue<T>::front()
 }
 
 template <typename T>
-void SharedQueue<T>::pop_front()
+void SharedQueue<T>::pop()
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     while (queue_.empty())
@@ -34,7 +34,7 @@ void SharedQueue<T>::pop_front()
 }
 
 template <typename T>
-void SharedQueue<T>::push_back(const T& item)
+void SharedQueue<T>::push(const T &item)
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     queue_.push_back(item);
@@ -44,7 +44,7 @@ void SharedQueue<T>::push_back(const T& item)
 }
 
 template <typename T>
-void SharedQueue<T>::push_back(T&& item)
+void SharedQueue<T>::push(T &&item)
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     queue_.push_back(std::move(item));
