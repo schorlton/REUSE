@@ -3,8 +3,8 @@
 // Taken from https://stackoverflow.com/a/36763257
 //
 
-#ifndef REUSE_THREADQUEUE_H
-#define REUSE_THREADQUEUE_H
+#ifndef REUSE_SHAREDQUEUE_H
+#define REUSE_SHAREDQUEUE_H
 
 #include <queue>
 #include <mutex>
@@ -32,4 +32,4 @@ class SharedQueue
         std::condition_variable cond_;
 };
 
-#endif //REUSE_THREADQUEUE_H
+#endif //REUSE_SHAREDQUEUE_H
