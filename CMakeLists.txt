@@ -4,4 +4,4 @@ project(REUSE)
 set(CMAKE_CXX_STANDARD 14)
 
 
-add_executable(REUSE main.cpp SharedQueue.cpp SharedQueue.h cmdline.cpp common.cpp)
+add_executable(reuse main.cpp SharedQueue.cpp SharedQueue.h cmdline.cpp common.cpp)
