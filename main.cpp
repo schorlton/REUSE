@@ -29,10 +29,15 @@ int reuse_filter(int argc, char **argv){
     thread_pool.emplace(thread_pool.end(), output, output_records);
 
     //Read in records to queue
+    while (false) { //TODO while (records remain to be read)
+        //Push record into queue
 
-    //Check queue size and increase thread pool to desaturate
-    if (pending_records.size() > queue_limit) thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
-
+        //Check queue size and increase thread pool to desaturate
+        if (pending_records.size() > queue_limit)
+            thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
+            while (pending_records.size(false) > queue_limit);
+    }
+    
     //Join thread pool
     for (auto& thread : thread_pool) thread.join();
 
