@@ -3,4 +3,4 @@ project(REUSE)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(REUSE main.cpp ThreadQueue.cpp ThreadQueue.h)
+add_executable(REUSE main.cpp SharedQueue.cpp SharedQueue.h)
