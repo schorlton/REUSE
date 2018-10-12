@@ -2,7 +2,7 @@
 // Created by Nolan Woods on 10/12/2018.
 //
 
-#include "ThreadQueue.h"
+#include "SharedQueue.h"
 
 
 template <typename T>
