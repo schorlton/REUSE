@@ -2,19 +2,26 @@
 Rapid Elimination of Useless Sequences
 
 ## Quick start
-reuse-build hg38.fa hg38
+reuse build hg38.fa hg38
 
-reuse -x hg38 -U input.fq -o filtered.fq
+reuse filter -x hg38 -U input.fq -o filtered.fq
+
+## Getting REUSE
+
+REUSE will run on most flavo(u)rs of Linux. Prerequisites include:
+- pigz
+
+The easiest way to get REUSE is by downloading the binary from https://github.com/chorltsd/REUSE/releases/latest
+Alternatively, the source can be downloaded and compiled.
 
 ## Building an index
 -Identify all k-mers within a reference dataset and store that library to disk.
 
 -Optionally filter k-mers from the reference that match to a target dataset so as to reduce false positive filtering. For example, filter all viral k-mers from the human genome so as not to filter reads originating from viruses in the sample.
 
--The database may be generated with alternative k-mer counters such as Jellyfish or KAnalyze as documented below. The advantages of reuse-build are that it is faster and more memory efficient, as it does not count k-mers, and it can mask k-mers.
 
 ### Usage:
-reuse-build [options] <reference_in> <index>
+reuse build [options] <reference_in> <index>
 
 ### Main arguments
 <reference_in> = A comma-separated list of FASTA files containing the reference sequences to be aligned to, or, if -c is specified, the sequences themselves. E.g., <reference_in> might be chr1.fa,chr2.fa,chrX.fa,chrY.fa, or, if -c is specified, this might be GGTCATCCT,ACGGGTCGT,CCGTTCTATGCGGCTTA.
@@ -45,7 +52,7 @@ reuse-build [options] <reference_in> <index>
 -Eliminate all reads or read pairs when 1 or more k-mers is found within the read
 
 ### Usage:
-reuse [options] -x <index> {-1 <m1> -2 <m2> | -U <r> | --interleaved \<i\>\}
+reuse filter [options] -x <index> {-1 <m1> -2 <m2> | -U <r> | --interleaved \<i\>\}
 
 ### Main arguments
 -x <index>
