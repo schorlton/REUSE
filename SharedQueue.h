@@ -23,7 +23,7 @@ class SharedQueue
         void push(const T &item);
         void push(T &&item);
 
-        uint size(bool blocking = true);
+        unsigned int size(bool blocking = true);
 
         bool empty();
 

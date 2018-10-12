@@ -54,7 +54,7 @@ void SharedQueue<T>::push(T &&item)
 }
 
 template <typename T>
-uint SharedQueue<T>::size(bool blocking)
+unsigned int SharedQueue<T>::size(bool blocking)
 {
     if (blocking) {
         std::unique_lock<std::mutex> mlock(mutex_);
