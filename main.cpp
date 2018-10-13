@@ -5,12 +5,11 @@
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 #include <seqan/basic.h>
-#include <fastaRecord.h>
-#include <fastqRecord.h>
 
 #include "cmdline.h"
-#include "SharedQueue.h"
 #include "thread_util.h"
+#include "FastaRecord.h"
+#include "SharedQueue.h"
 
 using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
