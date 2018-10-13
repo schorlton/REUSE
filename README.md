@@ -1,33 +1,37 @@
 # REUSE
 Rapid Elimination of Useless Sequences
 
+RESUSE is a k-mer based filtering tool for extracting foreign sequences from NGS datasets that do not match a reference sequence.
+REUSE takes FASTA/FASTAQ file inputs with reference sequences, and outputs k-mer filtered mismatches.
+
+
 ## Quick start
-reuse build hg38.fa hg38
+`reuse build hg38.fa hg38`
 
-reuse filter -x hg38 -U input.fq -o filtered.fq
+`reuse filter -x hg38 -U input.fq -o filtered.fq`
 
-## Getting REUSE
 
+## Software Requirements
 REUSE will run on most flavo(u)rs of Linux. Prerequisites include:
 - pigz
 
-The easiest way to get REUSE is by downloading the binary from https://github.com/chorltsd/REUSE/releases/latest
-Alternatively, the source can be downloaded and compiled.
-
-## Building an index
--Identify all k-mers within a reference dataset and store that library to disk.
-
--Optionally filter k-mers from the reference that match to a target dataset so as to reduce false positive filtering. For example, filter all viral k-mers from the human genome so as not to filter reads originating from viruses in the sample.
+<!!!!> What compiler/interpreter is needed (e.g. GCC v4.7, Python v3.6)<marked>
+<!!!!> What libraries you depend on (e.g. Boost v1.58, NumPy v1.15)
 
 
+## Installation
+Download the binary from https://github.com/chorltsd/REUSE/releases/latest
+Alternatively, this repository can be cloned:
+`git clone https://github.com/chorltsd/REUSE.git REUSE`
+
+<!!!!> further instructions/example install:
 ### Usage:
-reuse build [options] <reference_in> 
-
-### Main arguments
-<reference_in> = A comma-separated list of FASTA files containing the reference sequences to be aligned to, or, if -c is specified, the sequences themselves. E.g., <reference_in> might be chr1.fa,chr2.fa,chrX.fa,chrY.fa, or, if -c is specified, this might be GGTCATCCT,ACGGGTCGT,CCGTTCTATGCGGCTTA.
+reuse build [options]
 
 
 ### Options:
+-i = reference_in.  A comma-separated list of FASTA files containing the reference sequences to be aligned to.  (default: read from stdin for input )
+
 -o = Location to save index k-mer dataset to disk
 
 -p/--threads =Number of threads used (default: available number of threads)
@@ -35,8 +39,6 @@ reuse build [options] <reference_in>
 -r = Maximum RAM usage (default: all available RAM)
 
 -k = k-mer length (default: 21)
-
--c = The reference sequences are given on the command line. I.e. <reference_in> is a comma-separated list of sequences rather than a list of FASTA files.
 
 -m = Mask k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest.
 
