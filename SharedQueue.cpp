@@ -1,15 +1,12 @@
 //
-// Created by Nolan Woods on 10/12/2018.
+// Created by Nolan Woods on 10/13/2018.
 //
 
-#include "SharedQueue.h"
-
+template <typename T>
+SharedQueue<T>::SharedQueue() = default;
 
 template <typename T>
-SharedQueue<T>::SharedQueue(){}
-
-template <typename T>
-SharedQueue<T>::~SharedQueue(){}
+SharedQueue<T>::~SharedQueue() = default;
 
 template <typename T>
 T& SharedQueue<T>::front()
