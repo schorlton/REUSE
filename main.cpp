@@ -2,17 +2,21 @@
 #include <vector>
 #include <thread>
 #include <cstring>
+#include <seqan/sequence.h>
+#include <seqan/seq_io.h>
+#include <fastaRecord.h>
+#include <fastqRecord.h>
 
 #include "cmdline.h"
 #include "SharedQueue.h"
 #include "thread_util.h"
 
-using Record = char*;
+using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 
 //Thread interface declaration
-void filter(bool&, Queue&, Queue&);
-void output(bool&, Queue&);
+void filter(Queue&, Queue&) {}
+void output(Queue&) {}
 
 int reuse_build(int argc, char **argv){
 
@@ -41,20 +45,24 @@ int reuse_filter(int argc, char **argv){
 	seqan::CharString qual;
 
 	//Call sequence stream function of seqan to read from the file
-	const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
-	seqan::SeqFileIn seqFileIn(seqFileName);
+	seqan::CharString seqFileName = "data/chrY.fa"; //TODO: replace with param
+	seqan::SeqFileIn seqFileIn(toCString(seqFileName));
 
-  //Push record into queue
-  while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
-    try {
-      // if(norc in args) TODO
-      readRecord(id, reverseComplement(seq), qual, seqFileIn);
-      // else
-      // readRecord(id, seq, qual, seqFileIn);
-    } catch (std::exception const & e) {
-      std::cout << "ERROR: " << e.what() << std::endl;
-      return 1;
-    }
+	seqan::SequenceStream seqStream(seqFileName); //TODO: give argument to this from the arguments
+
+	if (!isGood(seqStream)) {
+		std::cerr << "ERROR: Could not open the file.\n";
+		return 1;
+	}
+
+	//Push record into queue
+	while (!atEnd(seqStream)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
+		try {
+			readRecord(id, seq, seqStream);
+		} catch (std::exception const & e) {
+			std::cout << "ERROR: " << e.what() << std::endl;
+			return 1;
+		}
 
 		//construct a fasta/fastq object
 		FastaRecord fa = FastaRecord(id, seq);
