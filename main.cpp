@@ -10,8 +10,8 @@ using Record = char*;
 using Queue = SharedQueue<Record>;
 
 //Thread interface declaration
-void filter(Queue, Queue);
-void output(Queue);
+void filter(bool&, Queue, Queue);
+void output(bool&, Queue);
 
 int reuse_build(int argc, char **argv){
 
@@ -28,9 +28,10 @@ int reuse_filter(int argc, char **argv){
 
     //Init thread pool
     Queue pending_records, output_records;
+    bool done = false;
     std::vector<std::thread> thread_pool;
-    thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
-    thread_pool.emplace(thread_pool.end(), output, output_records);
+    thread_pool.emplace(thread_pool.end(), done, filter, pending_records, output_records);
+    thread_pool.emplace(thread_pool.end(), done, output, output_records);
 
     //Read in records to queue
     while (false) { //TODO while (records remain to be read)
@@ -41,13 +42,14 @@ int reuse_filter(int argc, char **argv){
             if (thread_pool.size() < max_threads)
                 //Increase thread pool by 1
                 thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
-            
+
             //Wait for pending records to desaturate (Non-blocking size check)
             while (pending_records.size(false) > queue_limit);
         }
     }
     
     //Join thread pool
+    done = true; //Signal threads to exit
     for (auto& thread : thread_pool) thread.join();
 
     //Output statistics
