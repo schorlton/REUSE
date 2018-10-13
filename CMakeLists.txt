@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 INCLUDE_DIRECTORIES(lib)
 
-add_executable(reuse main.cpp SharedQueue.cpp SharedQueue.h cmdline.cpp common.cpp)
+add_executable(reuse main.cpp SharedQueue.cpp SharedQueue.h cmdline.cpp common.cpp thread_util.cpp thread_util.h)
 
 find_package( ZLIB REQUIRED )
 if ( ZLIB_FOUND )
