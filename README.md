@@ -30,9 +30,9 @@ reuse build [options] <reference_in>
 ### Options:
 -o = Location to save index k-mer dataset to disk
 
--p/--threads Threads (default: available number of threads)
+-p/--threads =Number of threads used (default: available number of threads)
 
--r Maximum RAM usage (default: all available RAM)
+-r = Maximum RAM usage (default: all available RAM)
 
 -k = k-mer length (default: 21)
 
