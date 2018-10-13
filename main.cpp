@@ -5,6 +5,7 @@
 
 #include "cmdline.h"
 #include "SharedQueue.h"
+#include "thread_util.h"
 
 using Record = char*;
 using Queue = SharedQueue<Record>;
@@ -30,7 +31,8 @@ int reuse_filter(int argc, char **argv){
     Queue pending_records, output_records;
     bool done = false;
     std::vector<std::thread> thread_pool;
-    thread_pool.emplace(thread_pool.end(), done, filter, pending_records, output_records);
+    auto t = thread_pool.emplace(thread_pool.end(), done, filter, pending_records, output_records);
+    increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
     thread_pool.emplace(thread_pool.end(), done, output, output_records);
 
     //Read in records to queue
@@ -41,7 +43,8 @@ int reuse_filter(int argc, char **argv){
         if (pending_records.size() > queue_limit) {
             if (thread_pool.size() < max_threads)
                 //Increase thread pool by 1
-                thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
+                t = thread_pool.emplace(thread_pool.end(), done, filter, pending_records, output_records);
+            increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
 
             //Wait for pending records to desaturate (Non-blocking size check)
             while (pending_records.size(false) > queue_limit);
