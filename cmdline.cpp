@@ -91,5 +91,9 @@ int parse_command_line( int argc, char** argv, parameters* params)
 
 void print_help(){
 	std::cerr << "Help" << std::endl;
+	std::cout << "usage: reuse build/filter [-h] [-v] [-U <path>] [-p <int>] [-o <path>]"<< std::endl;
+	std::cout << "                          [-m <int>] [-l <path>]"<< std::endl;
+
+
 }
 
