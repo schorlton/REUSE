@@ -22,17 +22,20 @@ CompressType parse_compress_type(char *text){
 	}
 
 }
-int parse_command_line( int argc, char** argv, parameters* params)
+int parse_command_line_build( int argc, char** argv, parameters_build& params)
 {
 	static struct option long_options[] = 
 	{
-		{"input"  , required_argument,   0, 'U'},
-		{"threads", required_argument,   0, 'p'},
-		{"help"   , no_argument,         0, 'h'},
-		{"version", no_argument,         0, 'v'},
-		{"out"    , required_argument,	 0, 'o'},
-		{"ram_limit", required_argument, 0, 'm'},
-		{"log_file", required_argument,	 0, 'l'},
+			{"in"    				, required_argument, 0, 'i'},
+			{"out"    				, required_argument, 0, 'o'},
+			{"threads"				, required_argument, 0, 'p'},
+			{"ram_limit"			, required_argument, 0, 'r'},
+			{"k-mer_length"			, required_argument, 0, 'k'},
+			{"mask"					, required_argument, 0, 'm'},
+			{"compress"				, no_argument,		 0, 'g'},
+			{"help"   				, no_argument,       0, 'h'},
+			{"version"				, no_argument,       0, 'v'},
+
 		{0        , 0,                   0,  0 }
 	};
   
@@ -43,34 +46,40 @@ int parse_command_line( int argc, char** argv, parameters* params)
 	}
  	int o;
 	int index;
-	while( ( o = getopt_long( argc, argv, "U:p:hvo:m:l:", long_options, &index)) != -1)
+	while( ( o = getopt_long( argc, argv, "o:p:r:k:c:m:ghv", long_options, &index)) != -1)
 	{
 		switch( o)
 		{
-
-			case 'U':
-				set_str( &( params->seq_filename) , optarg);
-			break;
-			case 'l':
-				set_str( &( params->log_filename), optarg);
-			break;
-			case 'g':
-				params->zip = parse_compress_type(optarg);
-			break;
-			case 'k':			
-				params->min_kmer = atoi(optarg);
-			break;
-			case 'm':
-				params->ram_limit = atoi(optarg);
-			break;
+			case 'i':
+				set_str( &( params.seq_filename), optarg);
+				break;
 			case 'o':
-				set_str( &( params->output_filename), optarg);
-			break;
+				set_str( &( params.output_folder_name), optarg);
+				break;
+			case 'p':
+				params.threads = atoi(optarg);
+				break;
+			case 'r':
+				params.ram_limit = atoi(optarg);
+				break;
+			case 'k':
+				params.min_kmer = atoi(optarg);
+				break;
+			case 'U':
+				set_str( &( params.seq_filename) , optarg);
+				break;
+			case 'l':
+				set_str( &( params.log_filename), optarg);
+				break;
+			case 'g':
+				params.zip = parse_compress_type(optarg);
+				break;
+
 			case 's':
-				params->paired = true;
+				params.paired = true;
 			break;
 			case 't':
-				params->threads = atoi( optarg);
+				params.threads = atoi( optarg);
 			break;
 			case 'h':
 				print_help();
@@ -83,7 +92,7 @@ int parse_command_line( int argc, char** argv, parameters* params)
 			break; 
 		}
 	}
-	if (params->seq_filename == NULL){
+	if (params.seq_filename == NULL){
 		std::cerr << "Sequence file not specified!" << std::endl;
 		reuse_exit(ExitSignal::IllegalArgumentError);
 	}
@@ -91,8 +100,13 @@ int parse_command_line( int argc, char** argv, parameters* params)
 
 void print_help(){
 	std::cerr << "Help" << std::endl;
-	std::cout << "usage: reuse build/filter [-h] [-v] [-U <path>] [-p <int>] [-o <path>]"<< std::endl;
-	std::cout << "                          [-m <int>] [-l <path>]"<< std::endl;
+	std::cout << "Usage: reuse <command> [options]"<< std::endl;
+    std::cout << " "<< std::endl;
+    std::cout << "Command"<< std::endl;
+    std::cout << "      build	Identify all k-mers within a reference dataset and store that library to disk"<< std::endl;
+    std::cout << "              options: reuse build [options] "<< std::endl;
+    std::cout << "      filter"<< std::endl;
+
 
 
 }

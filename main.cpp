@@ -5,11 +5,13 @@
 
 
 int reuse_build(int argc, char **argv){
-
+    std::cout << "Building reference......"<< std::endl;
+    parse_command_line_build( argc, *argv, parameters_build&)
 
 }
 
 int reuse_filter(int argc, char **argv){
+    std::cout << "Filtering sequence......"<< std::endl;
 
     //Parse and validate parameters
 
