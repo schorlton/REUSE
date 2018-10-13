@@ -21,24 +21,24 @@ Alternatively, the source can be downloaded and compiled.
 
 
 ### Usage:
-reuse build [options] <reference_in> <index>
+reuse build [options] <reference_in> 
 
 ### Main arguments
 <reference_in> = A comma-separated list of FASTA files containing the reference sequences to be aligned to, or, if -c is specified, the sequences themselves. E.g., <reference_in> might be chr1.fa,chr2.fa,chrX.fa,chrY.fa, or, if -c is specified, this might be GGTCATCCT,ACGGGTCGT,CCGTTCTATGCGGCTTA.
 
-<index> = Location to save index k-mer dataset to disk
-
 
 ### Options:
--p/--threads threads (default: available number of threads)
+-o = Location to save index k-mer dataset to disk
 
--m maximum RAM usage (default: all available RAM)
+-p/--threads Threads (default: available number of threads)
+
+-r Maximum RAM usage (default: all available RAM)
 
 -k = k-mer length (default: 21)
 
 -c = The reference sequences are given on the command line. I.e. <reference_in> is a comma-separated list of sequences rather than a list of FASTA files.
 
--h = Hide (ie mask) k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest.
+-m = Mask k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest.
 
 -g = Compress index when saving to disk. May take longer to generate the index and load when searching.
 
