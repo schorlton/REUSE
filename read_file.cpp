@@ -4,7 +4,7 @@ using namespace seqan;
 
 int main()
 {
-    CharString seqFileName = ("chrY.fa");
+    CharString seqFileName = ("data/chrY.fa");
 
     SeqFileIn seqFileIn;
     if (!open(seqFileIn, toCString(seqFileName)))
