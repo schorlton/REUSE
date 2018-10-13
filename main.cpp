@@ -2,12 +2,16 @@
 #include <vector>
 #include <thread>
 #include <cstring>
+#include <seqan/sequence.h>
+#include <seqan/seq_io.h>
+#include <fastaRecord.h>
+#include <fastqRecord.h>
 
 #include "cmdline.h"
 #include "SharedQueue.h"
 #include "thread_util.h"
 
-using Record = char*;
+using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 
 //Thread interface declaration
@@ -35,9 +39,36 @@ int reuse_filter(int argc, char **argv){
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
     thread_pool.emplace(thread_pool.end(), output, std::ref(output_records));
 
-    //Read in records to queue
-    while (false) { //TODO while (records remain to be read)
-        //Push record into queue
+	//Read in records to queue
+	seqan::CharString id;
+	seqan::Dna5QString seq;
+	seqan::CharString qual;
+
+	//Call sequence stream function of seqan to read from the file
+	seqan::CharString seqFileName = "data/chrY.fa"; //TODO: replace with param
+	seqan::SeqFileIn seqFileIn(toCString(seqFileName));
+
+	seqan::SequenceStream seqStream(seqFileName); //TODO: give argument to this from the arguments
+
+	if (!isGood(seqStream)) {
+		std::cerr << "ERROR: Could not open the file.\n";
+		return 1;
+	}
+
+	//Push record into queue
+	while (!atEnd(seqStream)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
+		try {
+			readRecord(id, seq, seqStream);
+		} catch (std::exception const & e) {
+			std::cout << "ERROR: " << e.what() << std::endl;
+			return 1;
+		}
+
+		//construct a fasta/fastq object
+		FastaRecord fa = FastaRecord(id, seq);
+
+		//push to the pending queue
+		pending_records.push(fa);
 
         //Check queue size and increase thread pool to desaturate
         if (pending_records.size() > queue_limit) {
@@ -50,7 +81,7 @@ int reuse_filter(int argc, char **argv){
             while (pending_records.size(false) > queue_limit);
         }
     }
-    
+
     //Join thread pool
     //Signal threads to exit
     pending_records.signal_done();
