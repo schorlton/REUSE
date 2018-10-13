@@ -8,6 +8,11 @@
 #include "common.h"
 #include "cmdline.h"
 
+
+parameters_build::parameters_build(){
+
+}
+
 CompressType parse_compress_type(char *text){
 	if(strcmp(text,"gzip")==0){
 		return CompressType::gzip;
@@ -35,8 +40,7 @@ int parse_command_line_build( int argc, char** argv, parameters_build& params)
 			{"compress"				, no_argument,		 0, 'g'},
 			{"help"   				, no_argument,       0, 'h'},
 			{"version"				, no_argument,       0, 'v'},
-
-		{0        , 0,                   0,  0 }
+			{0       			 	, 0	,                0,  0 }
 	};
   
 	if( argc == 1)

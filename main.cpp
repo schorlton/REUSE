@@ -6,7 +6,8 @@
 
 int reuse_build(int argc, char **argv){
     std::cout << "Building reference......"<< std::endl;
-    parse_command_line_build( argc, *argv, parameters_build&)
+    parameters_build p_build;
+    parse_command_line_build( argc, argv, p_build);
 
 }
 

@@ -14,13 +14,16 @@ struct parameters_build:parameters_common{
 	string_param seq_filename;
 	string_param output_folder_name;
 	string_param log_filename;
-
+	CompressType zip;
 	int threads;
 	long ram_limit;
+	bool paired;
 
 
 	int min_kmer;
 	bool command_line_input;
+	parameters_build();
+
 };
 struct parameters_filter:parameters_common{
 	string_param index_filename;
