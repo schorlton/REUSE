@@ -147,7 +147,7 @@ int parse_command_line_filter( int argc, char** argv, parameters_filter& params)
 				break;
 			case '1':
 				set_str( &( params.seq_filename_1), optarg);
-				params.command_line_input = false;
+				params.is_stdin = false;
 				break;
 			case '2':
 				set_str( &( params.seq_filename_2), optarg);
@@ -155,7 +155,7 @@ int parse_command_line_filter( int argc, char** argv, parameters_filter& params)
 				break;
 			case 'o':
 				set_str( &( params.output_folder_name), optarg);
-				params.command_line_output = false;
+				params.is_stdout = false;
 				break;
 			case 'p':
 				params.threads = atoi(optarg);
@@ -184,7 +184,7 @@ int parse_command_line_filter( int argc, char** argv, parameters_filter& params)
 	}
 	if (params.seq_filename_1 == NULL){
 		if(params.seq_filename_2 == NULL){
-			params.command_line_input=true;
+			params.is_stdin=true;
 		}else {
 			std::cout << "you need to have filename for both -1 and -2" << std::endl;
 			reuse_exit(ExitSignal::IllegalArgumentError);
