@@ -84,7 +84,7 @@ Comma-separated list of files containing interleaved reads.
 
 -z <command> = Compress outputted reads with alternate command, such as "bzip2"
 
--m = Maximum RAM usage (default: all available RAM)
+-r = Maximum RAM usage (default: all available RAM)
 
 -p/--threads = Threads to use (default: available number of threads)
 
