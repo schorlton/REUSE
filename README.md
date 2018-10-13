@@ -30,7 +30,7 @@ reuse build [options] <reference_in> <index>
 
 
 ### Options:
--p/--threads threads (default: 1)
+-p/--threads threads (default: available number of threads)
 
 -m maximum RAM usage (default: all available RAM)
 
