@@ -4,6 +4,7 @@
 #include <cstring>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
+#include <seqan/basic.h>
 #include <fastaRecord.h>
 #include <fastqRecord.h>
 
@@ -48,17 +49,10 @@ int reuse_filter(int argc, char **argv){
 	seqan::CharString seqFileName = "data/chrY.fa"; //TODO: replace with param
 	seqan::SeqFileIn seqFileIn(toCString(seqFileName));
 
-	seqan::SequenceStream seqStream(seqFileName); //TODO: give argument to this from the arguments
-
-	if (!isGood(seqStream)) {
-		std::cerr << "ERROR: Could not open the file.\n";
-		return 1;
-	}
-
 	//Push record into queue
-	while (!atEnd(seqStream)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
+	while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
 		try {
-			readRecord(id, seq, seqStream);
+			readRecord(id, seq, seqFileIn);
 		} catch (std::exception const & e) {
 			std::cout << "ERROR: " << e.what() << std::endl;
 			return 1;
