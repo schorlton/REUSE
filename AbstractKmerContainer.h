@@ -5,15 +5,19 @@
 #ifndef REUSE_ABSTRACTKMERCONTAINER_H
 #define REUSE_ABSTRACTKMERCONTAINER_H
 
-#include <string>
 
+template <typename Iterator, typename stringType>
 class AbstractKmerContainer {
 public:
     AbstractKmerContainer() {}
 
-    bool contains(std::string&); //TODO change to seqan type
-    void add(std::string&); //TODO change to seqan type
-};
+	template <typename stringType>
+    bool contains(stringType&); //TODO change to seqan type
+	template <typename stringType>
+    void add(stringType&); //TODO change to seqan type
 
+    template <typename Iterator>
+    void addRange(Iterator&);
+};
 
 #endif //REUSE_ABSTRACTKMERCONTAINER_H

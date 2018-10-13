@@ -3,7 +3,6 @@
 
 #include "cmdline.h"
 
-
 int reuse_build(int argc, char **argv){
 
     // build hash table; binary encoding
