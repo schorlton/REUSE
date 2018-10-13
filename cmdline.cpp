@@ -89,6 +89,7 @@ int parse_command_line( int argc, char** argv, parameters* params)
 	}
 }
 
-void print_help(){ 
+void print_help(){
+	std::cerr << "Help" << std::endl;
 }
 
