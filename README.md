@@ -56,15 +56,14 @@ reuse build [options] -o \<output_path\>
 -Eliminate all reads or read pairs when 1 or more k-mers is found within the read
 
 ### Usage:
-reuse filter [options] -x \<index\>  -i \<i\>
-
-### Main arguments
+reuse filter [options] -x \<index\> -1 \<m1\> -2 \<m2\> 
+ ### Main arguments
 -x \<index\>
 The basename of the index for the reference dataset. This can either be generated with reuse-build (.db.gz) or with an alternative program for k-mer counting, such as Jellyfish, KAnalyze or others. K-mer count files in Jellyfish dump format/KAnalyze default output format (two column text file for both) may be compressed with gzip.
-  
--i \<i\>
-Comma-separated list of files containing interleaved reads. 
-
+ -1 \<m1\>
+Comma-separated list of files containing mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m2>. Reads may be a mix of different lengths. If - is specified, reuse will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format.
+ -2 \<m2\>
+Comma-separated list of files containing mate 2s (filename usually includes _2), e.g. -2 flyA_2.fq,flyB_2.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m1>. Reads may be a mix of different lengths. If - is specified, resuse will read the mate 2s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format.
 
 ### Options:
 -o <output> = Save reads not matching the k-mer filter to <output>.fast(q/a) for single-end reads, or <output>_1.fast(q/a) and <output>_2.fast(q/a) for paired-end reads. By default, reads are output to STDOUT.
