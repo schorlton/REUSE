@@ -16,8 +16,7 @@ using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 
 //Thread interface declaration
-void filter(bool&, Queue&, Queue&);
-void output(bool&, Queue&, char **argv);
+void filter(bool&, Queue&, Queue&) {}
 
 /*Program to output the */
 void output(bool &done, Queue &q, char **argv){
