@@ -5,8 +5,8 @@
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 #include <seqan/basic.h>
-#include <fastaRecord.h>
-#include <fastqRecord.h>
+#include "FastaRecord.h"
+#include "FastqRecord.h"
 
 #include "cmdline.h"
 #include "SharedQueue.h"

@@ -4,8 +4,8 @@
  *  Created on: Oct 13, 2018
  *      Author: jassi
  */
-#include<fastaRecord.h>
-#include<fastqRecord.h>
+#include"FastaRecord.h"
+#include"FastqRecord.h"
 #include<seqan/seq_io.h>
 #include<seqan/sequence.h>
 
