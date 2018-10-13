@@ -15,26 +15,23 @@ using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 
 //Thread interface declaration
-void filter(bool&, Queue&, Queue&) {};
-void output(bool&, Queue&) {};
-void filter(bool&, Queue&, Queue&);
-void output(bool&, Queue&, char **argv);
+void filter(bool&, Queue&, Queue&) {}
 
 /*Program to output the */
 void output(bool &done, Queue &q, char **argv){
 
-  seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
-  seqan::SeqFileOut seqFileOut(toCString(seqFileName));
+	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
+	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
 
-  // while the boolean is 1 and the Queue is non-empty
-  while(!done){
-    if(!q.empty()){
-      seqan::writeRecord(seqFileOut, q.front().id, q.front().seq); //TODO: add call for fastq sequences
-      q.pop(); // remove the front entry from the dequeue
-    }
-  }
+	// while the boolean is 1 and the Queue is non-empty
+	while(!done){
+		if(!q.empty()){
+			seqan::writeRecord(seqFileOut, q.front().id, q.front().seq); //TODO: add call for fastq sequences
+			q.pop(); // remove the front entry from the dequeue
+		}
+	}
 
-  return;
+	return;
 }
 
 int reuse_build(int argc, char **argv){
@@ -79,8 +76,8 @@ int reuse_filter(int argc, char **argv){
       return 1;
     }
 
-    //construct a fasta/fastq object
-    FastaRecord fa = FastaRecord(id, seq);
+		//construct a fasta/fastq object
+		FastaRecord fa = FastaRecord(id, seq);
 
 		//push to the pending queue
 		pending_records.push(fa);
@@ -89,7 +86,7 @@ int reuse_filter(int argc, char **argv){
         if (pending_records.size() > queue_limit) {
             if (thread_pool.size() < max_threads)
                 //Increase thread pool by 1
-                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(done), std::ref(pending_records), std::ref(output_records));
+                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
             increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
 
             //Wait for pending records to desaturate (Non-blocking size check)
