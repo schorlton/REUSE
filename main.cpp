@@ -6,7 +6,7 @@
 
 int reuse_build(int argc, char **argv){
 
-
+    // build hash table; binary encoding
 }
 
 int reuse_filter(int argc, char **argv){
