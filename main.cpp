@@ -8,15 +8,32 @@
 
 #include "cmdline.h"
 #include "thread_util.h"
-#include "FastaRecord.h"
+#include "fastaRecord.h"
 #include "SharedQueue.h"
 
 using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 
 //Thread interface declaration
-void filter(Queue&, Queue&) {}
-void output(Queue&) {}
+void filter(bool&, Queue&, Queue&);
+void output(bool&, Queue&, char **argv);
+
+/*Program to output the */
+void output(bool &done, Queue &q, char **argv){
+
+	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
+	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
+
+	// while the boolean is 1 and the Queue is non-empty
+	while(!done){
+		if(!q.empty()){
+			seqan::writeRecord(seqFileOut, q.front().id, q.front().seq); //TODO: add call for fastq sequences
+			q.pop(); // remove the front entry from the dequeue
+		}
+	}
+
+	return;
+}
 
 int reuse_build(int argc, char **argv){
 
