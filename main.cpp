@@ -2,8 +2,39 @@
 #include <cstring>
 
 #include "cmdline.h"
+#include "BBHashKmerContainer.h"
+
 
 int reuse_build(int argc, char **argv){
+    
+    CharString seqFileName = "chrT.fa";
+
+    SeqFileIn seqfile;
+
+    if( !open(seqfile, toCString(seqFileName))){
+        std::cerr << "ERROR\n" << std::endl;
+        return -1;
+
+    }
+
+    StringSet<CharString> ids;
+    StringSet<Dna5String> seqs;
+
+    try{
+        readRecords(ids,seqs,seqFile);
+    }catch(Exception const & e){
+        std::cerr << "ERROR" << e.what() << std::endl;
+        return 1;
+    }
+
+    BBHashKmerContainer table(1,1,150);
+
+    for(unsigned i = 0; i < length(ids) ; ++i){
+
+        KMerIterator<Dna5,unsigned long int> _begin = get_begin(toCString(seqs[i]),21);
+        KMerIterator<Dna5,unsigned long int> _end = get_end(toCString(seqs[i]),21);
+        table.addRange(_begin,_end);
+    }
 
     // build hash table; binary encoding
 }

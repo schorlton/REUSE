@@ -4,6 +4,21 @@
 #include <seqan/sequence.h>
 
 template <typename T, typename E>
+KMerIterator<T,E> get_begin(T str, int k){
+    KMerIterator<T,E> iter(str,k);
+    return iter;
+}
+
+template <typename T, typename E>
+KMerIterator<T,E> get_end(T str, int k){
+    KMerIterator<T,E> iter(str,k);
+    iter+=length(str)-k;
+}
+
+
+
+
+template <typename T, typename E>
 class KMerIterator;
 
 template <typename T, typename E>
@@ -23,9 +38,10 @@ E kmer_encode(KMerIterator<T,E> start, KMerIterator<T,E> end){
 template <typename T, typename E>
 class KMerIterator{
     public:
-        KMerIterator(const T *str){
+        KMerIterator(const T *str, int k){
             ptr = str;
-            k = 3;
+            this->k = k;
+
         }
         ~KMerIterator(){}
 
