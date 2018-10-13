@@ -33,4 +33,6 @@ class SharedQueue
         std::condition_variable cond_;
 };
 
+#include "SharedQueue.cpp" //Move implementation into header due to template instantiation
+
 #endif //REUSE_SHAREDQUEUE_H
