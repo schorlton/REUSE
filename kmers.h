@@ -38,7 +38,7 @@ class KMerIterator{
         KMerIterator operator++(int val){ 
             KMerIterator i = *this; 
             val = 1;
-            ptr+=val; 
+            ptr += val; 
             return i;
         }
         E operator*(){
@@ -56,11 +56,11 @@ class KMerIterator{
         }
 
         bool operator==(const KMerIterator& rhs){
-            return ptr == rhs.ptr;   
+            return ptr == rhs.ptr;
         }
 
         bool operator!=(const KMerIterator& rhs){
-            return ptr != rhs.ptr;   
+            return ptr != rhs.ptr;
         }
         
         KMerIterator operator+(int integer_value){
