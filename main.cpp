@@ -51,7 +51,7 @@ int reuse_filter(int argc, char **argv){
 	//Push record into queue
 	while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
 		try {
-			readRecord(id, seq, seqFileIn);
+			readRecord(id, seq, qual, seqFileIn);
 		} catch (std::exception const & e) {
 			std::cout << "ERROR: " << e.what() << std::endl;
 			return 1;
