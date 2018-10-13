@@ -30,7 +30,7 @@ reuse build [options]
 
 
 ### Options:
--i = reference_in.  A comma-separated list of FASTA files containing the reference sequences to be aligned to.  (default: read from stdin for input )
+-i = reference_in.  A comma-separated list of FASTA files containing the reference sequences to be aligned to.  (default: read from STDIN )
 
 -o = Location to save index k-mer dataset to disk
 
