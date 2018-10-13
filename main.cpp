@@ -86,7 +86,7 @@ int reuse_filter(int argc, char **argv){
         if (pending_records.size() > queue_limit) {
             if (thread_pool.size() < max_threads)
                 //Increase thread pool by 1
-                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
+                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(done), std::ref(pending_records), std::ref(output_records));
             increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
 
             //Wait for pending records to desaturate (Non-blocking size check)
@@ -95,9 +95,7 @@ int reuse_filter(int argc, char **argv){
     }
 
     //Join thread pool
-    //Signal threads to exit
-    pending_records.signal_done();
-    output_records.signal_done();
+    done = true; //Signal threads to exit
     for (auto& thread : thread_pool) thread.join();
 
     //Output statistics
