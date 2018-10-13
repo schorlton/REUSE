@@ -19,7 +19,9 @@ int reuse_build(int argc, char **argv){
 }
 
 int reuse_filter(int argc, char **argv){
-    uint queue_limit = 10; //Default soft limit for queue before thread pool increase
+    //TODO replace with input parameters
+    unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
+    unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
     //Parse and validate parameters
 
     //Init thread pool
@@ -33,7 +35,7 @@ int reuse_filter(int argc, char **argv){
         //Push record into queue
 
         //Check queue size and increase thread pool to desaturate
-        if (pending_records.size() > queue_limit)
+        if (pending_records.size() > queue_limit && thread_pool.size() < max_threads)
             thread_pool.emplace(thread_pool.end(), filter, pending_records, output_records);
             while (pending_records.size(false) > queue_limit);
     }
