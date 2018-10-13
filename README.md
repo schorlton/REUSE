@@ -90,9 +90,9 @@ Comma-separated list of files containing interleaved reads.
 
 -l <log> = Log file
   
--mk = Minimum number of k-mers per read to filter it (default: 1)
+-k = Minimum number of k-mers per read to filter it (default: 1)
 
--sp = Split pairs
+-s = Split pairs
 
 
 ## Performance optimization:
