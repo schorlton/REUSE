@@ -15,8 +15,7 @@ using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 
 //Thread interface declaration
-void filter(bool&, Queue&, Queue&);
-void output(bool&, Queue&, char **argv);
+void filter(bool&, Queue&, Queue&) {}
 
 /*Program to output the */
 void output(bool &done, Queue &q, char **argv){
@@ -65,14 +64,17 @@ int reuse_filter(int argc, char **argv){
 	const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
 	seqan::SeqFileIn seqFileIn(seqFileName);
 
-	//Push record into queue
-	while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
-		try {
-			readRecord(id, seq, qual, seqFileIn);
-		} catch (std::exception const & e) {
-			std::cout << "ERROR: " << e.what() << std::endl;
-			return 1;
-		}
+  //Push record into queue
+  while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
+    try {
+      // if(norc in args) TODO
+      readRecord(id, reverseComplement(seq), qual, seqFileIn);
+      // else
+      // readRecord(id, seq, qual, seqFileIn);
+    } catch (std::exception const & e) {
+      std::cout << "ERROR: " << e.what() << std::endl;
+      return 1;
+    }
 
 		//construct a fasta/fastq object
 		FastaRecord fa = FastaRecord(id, seq);
