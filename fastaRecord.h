@@ -4,22 +4,23 @@
  *  Created on: Oct 13, 2018
  *      Author: jassi
  */
-#include <seqan/sequence.h>
-#include <seqan/seq_io.h>
-
 #ifndef FASTARECORD_H_
 #define FASTARECORD_H_
 
+#include <seqan/sequence.h>
+#include <seqan/seq_io.h>
+
 struct FastaRecord {
-private:
-	seqan::CharString id;seqan::Dna5String seq;
-public:
-	FastaRecord(seqan::CharString, seqan::Dna5String);seqan::CharString GetID() {
-		return id;
-	}
-	seqan::Dna5String GetSeq() {
-		return seq;
-	}
+	seqan::CharString id;
+	seqan::Dna5String seq;
+
+	FastaRecord(seqan::CharString id, seqan::Dna5String seq): id(id), seq(seq) {};
+};
+
+struct FastqRecord : FastaRecord {
+    seqan::CharString qual;
+
+    FastqRecord(seqan::CharString id, seqan::Dna5QString seq, seqan::CharString qual): FastaRecord(id, seq), qual(qual) {};
 };
 
 #endif /* FASTARECORD_H_ */
