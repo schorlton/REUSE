@@ -13,21 +13,25 @@ REUSE takes FASTA/FASTQ file inputs with reference sequences, and outputs k-mer 
 
 ## Software Requirements
 REUSE will run on most flavo(u)rs of Linux. Prerequisites include:
-- pigz
-
-
+- zlib1g-dev
+- libpthread-stubs0-dev
+- libbz2-1.0
+- libseqan2-dev
+- c++ (≥14)
+- cmake (≥3.5)
 
 ## Installation
 Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest
 Alternatively, this repository can be cloned:
+
 `git clone https://github.com/chorltsd/REUSE.git REUSE`
 
 `cd REUSE`
 
-`make`
+`cmake .`
 
 ### Usage:
-reuse build [options] -o \<output_path\>
+`reuse build [options] -o \<output_path\>`
 
 -o = Location to save index k-mer dataset to disk
 
@@ -57,7 +61,8 @@ reuse build [options] -o \<output_path\>
 -Eliminate all reads or read pairs when 1 or more reference k-mers are found within the read. Optionally, retain only those reads with matching k-mers.
 
 ### Usage:
-reuse filter [options] -x \<index\> -1 \<m1\> -2 \<m2\> 
+`reuse filter [options] -x \<index\> -1 \<m1\> -2 \<m2\>`
+
  ### Main arguments
 -x \<index\>
 The basename of the index for the reference dataset, generated with `reuse build`
