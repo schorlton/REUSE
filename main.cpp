@@ -9,7 +9,7 @@
 
 #include <fstream>
 
-
+#include "AbstractKmerContainer.h"
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
 #include "thread_util.h"
@@ -25,7 +25,7 @@ using namespace seqan;
 
 
 //Thread interface declaration
-void filter(Queue&, Queue&) {}
+void filter(Queue&, Queue&, AbstractKmerContainer& kmers) {}
 
 /*Program to output the */
 void output(Queue &queue, const ParametersFilter &params){
@@ -158,6 +158,7 @@ int reuse_build(int argc, char **argv){
 }
 
 int reuse_filter(int argc, char **argv){
+    //Parse and validate parameters
     std::cerr << "Filtering sequence......"<< std::endl;
     ParametersFilter params;
     parse_command_line_filter( argc, argv, params);
@@ -168,12 +169,12 @@ int reuse_filter(int argc, char **argv){
     unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
     unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
 
-    //Parse and validate parameters
+    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,100,21); //TODO: properly instantiate and load from table file
 
     //Init thread pool
     Queue pending_records, output_records;
     std::vector<std::thread> thread_pool;
-    auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
+    auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table));
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
     thread_pool.emplace(thread_pool.end(), output, std::ref(output_records), params); //Pass params
 
@@ -212,7 +213,7 @@ int reuse_filter(int argc, char **argv){
         if (pending_records.size() > queue_limit) {
             if (thread_pool.size() < max_threads)
                 //Increase thread pool by 1
-                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
+                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table));
             increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
 
             //Wait for pending records to desaturate (Non-blocking size check)

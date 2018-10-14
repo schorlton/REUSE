@@ -29,7 +29,11 @@ class BBHashKmerContainer: public AbstractKmerContainer<Iter, charType> {
 
 	    void addRange(Iter& start, Iter& end);
 
-	private:
+	void load_index(char *file) override;
+
+	void save_index(char *file) override;
+
+private:
 		int kmers_size;
 		boophf_t * bphf;
 		int numThreads;
@@ -101,6 +105,16 @@ void BBHashKmerContainer<Iter, charType>::addRange(Iter& start, Iter& end) {
 	
 
 	// free(data);
+
+}
+
+template<typename Iter, typename charType>
+void BBHashKmerContainer<Iter, charType>::load_index(char *file) {
+
+}
+
+template<typename Iter, typename charType>
+void BBHashKmerContainer<Iter, charType>::save_index(char *file) {
 
 }
 
