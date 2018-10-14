@@ -8,8 +8,9 @@
 #include <fastqRecord.h>
 
 #include "cmdline.h"
-#include "SharedQueue.h"
 #include "thread_util.h"
+#include "FastaRecord.h"
+#include "SharedQueue.h"
 
 using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
@@ -62,9 +63,20 @@ int reuse_filter(int argc, char **argv){
 	seqan::CharString qual;
 
 	//Call sequence stream function of seqan to read from the file
-	seqan::CharString seqFileName = "data/chrY.fa"; //TODO: replace with param
-	seqan::SeqFileIn seqFileIn(toCString(seqFileName));
+	const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
+	seqan::SeqFileIn seqFileIn(seqFileName);
 
+  //Push record into queue
+  while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
+    try {
+      // if(norc in args) TODO
+      readRecord(id, reverseComplement(seq), qual, seqFileIn);
+      // else
+      // readRecord(id, seq, qual, seqFileIn);
+    } catch (std::exception const & e) {
+      std::cout << "ERROR: " << e.what() << std::endl;
+      return 1;
+    }
 	seqan::SequenceStream seqStream(seqFileName); //TODO: give argument to this from the arguments
 
 	if (!isGood(seqStream)) {
@@ -98,7 +110,7 @@ int reuse_filter(int argc, char **argv){
             while (pending_records.size(false) > queue_limit);
         }
     }
-    
+
     //Join thread pool
     //Signal threads to exit
     pending_records.signal_done();
