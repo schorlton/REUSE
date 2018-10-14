@@ -15,4 +15,3 @@ if ( ZLIB_FOUND )
     include_directories( ${ZLIB_INCLUDE_DIRS} )
     target_link_libraries( reuse ${ZLIB_LIBRARIES} )
 endif( ZLIB_FOUND )
-
