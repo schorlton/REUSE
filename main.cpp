@@ -9,7 +9,7 @@
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
 #include "thread_util.h"
-#include "FastaRecord.h"
+#include "fastaRecord.h"
 #include "SharedQueue.h"
 
 
@@ -24,7 +24,7 @@ using namespace seqan;
 void filter(Queue&, Queue&) {}
 
 /*Program to output the */
-void output(Queue &queue, char **argv){
+void output(Queue &queue, const ParametersFilter &params){
 
 	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
 	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
@@ -108,7 +108,7 @@ int reuse_filter(int argc, char **argv){
     seqan::CharString qual;
 
     //Call sequence stream function of seqan to read from the file
-    const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
+    const char* seqFileName = params.seq_filename_1;
     seqan::SeqFileIn seqFileIn(seqFileName);
 
     //Push record into queue
