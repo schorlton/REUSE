@@ -1,8 +1,8 @@
 # REUSE
-Rapid Elimination of Useless Sequences
+Rapid Elimination of Useless SEquences
 
-RESUSE is a k-mer based filtering tool for extracting foreign sequences from NGS datasets that do not match a reference sequence.
-REUSE takes FASTA/FASTAQ file inputs with reference sequences, and outputs k-mer filtered mismatches.
+REUSE is a k-mer based tool for filtration of reads in sequencing datasets that do not match a reference sequence.
+REUSE takes FASTA/FASTQ file inputs with reference sequences, and outputs k-mer filtered reads. Common applications of REUSE include filtration of host, contamination, PhiX or ribosomal sequences.
 
 
 ## Quick start
@@ -15,16 +15,15 @@ REUSE takes FASTA/FASTAQ file inputs with reference sequences, and outputs k-mer
 REUSE will run on most flavo(u)rs of Linux. Prerequisites include:
 - pigz
 
-<!!!!> What compiler/interpreter is needed (e.g. GCC v4.7, Python v3.6)<marked>
-<!!!!> What libraries you depend on (e.g. Boost v1.58, NumPy v1.15)
 
 
 ## Installation
-Download the binary from https://github.com/chorltsd/REUSE/releases/latest
+Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest
 Alternatively, this repository can be cloned:
 `git clone https://github.com/chorltsd/REUSE.git REUSE`
+`cd REUSE`
+`make`
 
-<!!!!> further instructions/example install:
 ### Usage:
 reuse build [options] -o \<output_path\>
 
@@ -32,11 +31,11 @@ reuse build [options] -o \<output_path\>
 
 
 ### Options:
--i = reference_in.  A comma-separated list of FASTA files containing the reference sequences to be aligned to.  (default: read from STDIN )
+-i = reference in.  A comma-separated list of FASTA files containing the reference sequences to be aligned to.  (default: read from STDIN )
 
 -o = Location to save index k-mer dataset to disk
 
--p/--threads =Number of threads used (default: 8)
+-p/--threads = Number of threads to use (default: 1)
 
 -r = Maximum RAM usage in MB (default: 400)
 
@@ -53,13 +52,13 @@ reuse build [options] -o \<output_path\>
 
 
 ## Searching the index
--Eliminate all reads or read pairs when 1 or more k-mers is found within the read
+-Eliminate all reads or read pairs when 1 or more reference k-mers are found within the read. Optionally, retain only those reads with matching k-mers.
 
 ### Usage:
 reuse filter [options] -x \<index\> -1 \<m1\> -2 \<m2\> 
  ### Main arguments
 -x \<index\>
-The basename of the index for the reference dataset. This can either be generated with reuse-build (.db.gz) or with an alternative program for k-mer counting, such as Jellyfish, KAnalyze or others. K-mer count files in Jellyfish dump format/KAnalyze default output format (two column text file for both) may be compressed with gzip.
+The basename of the index for the reference dataset, generated with `reuse build`
 
  -1 \<m1\>
 Comma-separated list of files containing mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m2>. Reads may be a mix of different lengths. If - is specified, reuse will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format.
@@ -76,9 +75,9 @@ Comma-separated list of files containing mate 2s (filename usually includes _2),
 
 -z <command> = Compress outputted reads with alternate command, such as "bzip2"
 
--r = Maximum RAM usage (default: all available RAM)
+-r = Maximum RAM usage in MB (default: 400)
 
--p/--threads = Threads to use (default: available number of threads)
+-p/--threads = Number of threads to use (default: available number of threads)
 
 -l <log> = Log file
   
@@ -88,4 +87,4 @@ Comma-separated list of files containing mate 2s (filename usually includes _2),
 
 
 ## Performance optimization:
-REUSE will run fastest with filtering after the first k-mer is found (-mk 1), maximum thread and RAM usage, and a lower k-mer size. Lower k-mer sizes reduce the index size but are less accurate at differentiating species.
+REUSE will run fastest with filtration after the first k-mer is found (-mk 1), maximum thread and RAM usage, and a lower k-mer size. Lower k-mer sizes reduce the index size but are less specific at differentiating species.
