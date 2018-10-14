@@ -60,7 +60,7 @@ int reuse_filter(int argc, char **argv){
     std::cout <<"paired? " << p_filter.paired<< std::endl;
 
     //Parse and validate parameters
-
+    
     //Init thread pool
 
 
