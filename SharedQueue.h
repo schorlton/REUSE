@@ -14,22 +14,21 @@ template <typename T>
 class SharedQueue
 {
     public:
+        using ItemPointer = std::unique_ptr<T>;
         SharedQueue();
         ~SharedQueue();
 
-        std::unique_ptr<T> pop();
+        ItemPointer pop();
 
-        void push(const T &item);
-        void push(T &&item);
+        void push(ItemPointer item);
 
         unsigned int size(bool blocking = true);
 
         void signal_done();
 
     private:
-        std::unique_ptr<T> none;
         bool done;
-        std::deque<T> queue_;
+        std::deque<ItemPointer> queue_;
         std::mutex mutex_;
         std::condition_variable cond_;
 };

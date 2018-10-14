@@ -24,24 +24,26 @@ using Queue = SharedQueue<Record>;
 using namespace seqan;
 
 
-
-
 //Thread interface declaration
 void filter(Queue&, Queue&) {}
 
 /*Program to output the */
-void output(Queue &q, char **argv){
+void output(Queue &queue, const ParametersFilter &params){
 
-	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
-	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
+	seqan::SeqFileOut seqFileOut;
+	if (params.is_stdout)
+	    seqan::open(seqFileOut, std::cout);
+	else
+	    seqan::open(seqFileOut, params.output_folder_name);
 
 	// while the boolean is 1 and the Queue is non-empty
-	/*while(!done){
-		if(!q.empty()){
-			seqan::writeRecord(seqFileOut, q.front().id, q.front().seq); //TODO: add call for fastq sequences
-			q.pop(); // remove the front entry from the dequeue
+	Queue::ItemPointer item;
+	do {
+	    item = queue.pop();
+		if(item != nullptr) {
+			seqan::writeRecord(seqFileOut, item->id, item->seq); //TODO: add call for fastq sequences
 		}
-	}*/
+	} while(item != nullptr);
 
 	return;
 }
@@ -77,7 +79,7 @@ int filter_test(int refTableLength){
         inputFile.close();
     } catch (Exception const & e){
         std::cerr << "FILE ERROR" << e.what() << std::endl;
-    }    
+    }
 
     try {
         std::ofstream outputFile("test_filter_output.fa");
@@ -92,7 +94,7 @@ int filter_test(int refTableLength){
         outputFile.close();
     } catch (Exception const & e) {
         std::cerr << "FILE ERROR" << e.what() << std::endl;
-    }    
+    }
 
     return 0;
 
@@ -101,7 +103,7 @@ int filter_test(int refTableLength){
 
 int reuse_build(int argc, char **argv){
 
-    std::cout << "Building reference......"<< std::endl;
+    std::cerr << "Building reference......"<< std::endl;
     ParametersBuild p_build;
     if( 0!= parse_command_line_build( argc, argv, p_build)){
         return -1;
@@ -122,7 +124,6 @@ int reuse_build(int argc, char **argv){
     StringSet<CharString> ids;
     StringSet<Dna5String> seqs;
 
-
     try{
         readRecords(ids,seqs,seqfile);
     }catch(Exception const & e){
@@ -132,15 +133,14 @@ int reuse_build(int argc, char **argv){
 
     int refTableLength = length(seqs[0])/10-21;
     BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,refTableLength,21);
-    std::cout << "TEST" << std::endl;
+
     for(unsigned i = 0; i < length(ids) ; ++i){
 
         KMerIterator<Dna5> _begin = get_begin(toCString(seqs[i]),21);
         KMerIterator<Dna5> _end = get_end(toCString(seqs[i]),length(seqs[i]),21);
 
-        std::cout << "Length : " << length(seqs[i]) << std::endl;
+        std::cerr << "Length : " << length(seqs[i]) << std::endl;
         table.addRange(_begin,_end);
-
     }
 
     try {
@@ -157,14 +157,13 @@ int reuse_build(int argc, char **argv){
     // build hash table; binary encoding
 }
 
-
 int reuse_filter(int argc, char **argv){
-    std::cout << "Filtering sequence......"<< std::endl;
-    ParametersFilter p_filter;
-    parse_command_line_filter( argc, argv, p_filter);
-    std::cout << "number of thread "<<p_filter.threads<< std::endl;
-    std::cout <<"input " << p_filter.seq_filename_1<< std::endl;
-    std::cout <<"paired? " << p_filter.paired<< std::endl;
+    std::cerr << "Filtering sequence......"<< std::endl;
+    ParametersFilter params;
+    parse_command_line_filter( argc, argv, params);
+    std::cerr << "number of thread "<<params.threads<< std::endl;
+    std::cerr <<"input " << params.seq_filename_1<< std::endl;
+    std::cerr <<"paired? " << params.paired<< std::endl;
     //TODO replace with input parameters
     unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
     unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
@@ -173,11 +172,10 @@ int reuse_filter(int argc, char **argv){
 
     //Init thread pool
     Queue pending_records, output_records;
-    bool done = false;
     std::vector<std::thread> thread_pool;
     auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
-    thread_pool.emplace(thread_pool.end(), output, std::ref(output_records), argv); //Pass params
+    thread_pool.emplace(thread_pool.end(), output, std::ref(output_records), params); //Pass params
 
     //Read in records to queue
     seqan::CharString id;
@@ -185,8 +183,11 @@ int reuse_filter(int argc, char **argv){
     seqan::CharString qual;
 
     //Call sequence stream function of seqan to read from the file
-    const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
-    seqan::SeqFileIn seqFileIn(seqFileName);
+    seqan::SeqFileIn seqFileIn;
+    if (params.is_stdin)
+        seqan::open(seqFileIn, std::cin);
+    else
+        seqan::open(seqFileIn, params.seq_filename_1);
 
     //Push record into queue
     while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
@@ -197,15 +198,15 @@ int reuse_filter(int argc, char **argv){
             // else
             // readRecord(id, seq, qual, seqFileIn);
         } catch (std::exception const & e) {
-            std::cout << "ERROR: " << e.what() << std::endl;
+            std::cerr << "ERROR: " << e.what() << std::endl;
             return 1;
         }
 
         //construct a fasta/fastq object
-        FastaRecord fa = FastaRecord(id, seq);
+        Queue::ItemPointer fa = std::make_unique<FastaRecord>(id, seq);
 
         //push to the pending queue
-        pending_records.push(fa);
+        pending_records.push(std::move(fa));
 
         //Check queue size and increase thread pool to desaturate
         if (pending_records.size() > queue_limit) {

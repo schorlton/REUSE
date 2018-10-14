@@ -13,13 +13,16 @@
 struct FastaRecord {
 	seqan::CharString id;
 	seqan::Dna5String seq;
-
+	FastaRecord(FastaRecord&) = default;
+	FastaRecord(FastaRecord&&) = default;
 	FastaRecord(seqan::CharString id, seqan::Dna5String seq): id(id), seq(seq) {};
 };
 
 struct FastqRecord : FastaRecord {
     seqan::CharString qual;
 
+	FastqRecord(FastqRecord&) = default;
+	FastqRecord(FastqRecord&&) = default;
     FastqRecord(seqan::CharString id, seqan::Dna5QString seq, seqan::CharString qual): FastaRecord(id, seq), qual(qual) {};
 };
 
