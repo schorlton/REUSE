@@ -62,8 +62,8 @@ int reuse_filter(int argc, char **argv){
 	seqan::CharString qual;
 
 	//Call sequence stream function of seqan to read from the file
-	seqan::CharString seqFileName = "data/chrY.fa"; //TODO: replace with param
-	seqan::SeqFileIn seqFileIn(toCString(seqFileName));
+	const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
+	seqan::SeqFileIn seqFileIn(seqFileName);
 
 	//Push record into queue
 	while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
