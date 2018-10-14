@@ -2,9 +2,13 @@
 #include <vector>
 #include <thread>
 #include <cstring>
+
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 #include <seqan/basic.h>
+
+#include <fstream>
+
 
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
@@ -18,6 +22,7 @@ using Queue = SharedQueue<Record>;
 
 
 using namespace seqan;
+
 
 
 
@@ -42,7 +47,8 @@ void output(Queue &q, char **argv){
 }
 
 
-int filter_test(BBHashKmerContainer<KMerIterator<Dna5>,Dna5> &table){
+int filter_test(int refTableLength){
+
     CharString seqFileName = "data/reads.fa";
 
     SeqFileIn seqfile;
@@ -56,7 +62,6 @@ int filter_test(BBHashKmerContainer<KMerIterator<Dna5>,Dna5> &table){
     StringSet<CharString> ids;
     StringSet<Dna5String> seqs;
 
-
     try{
         readRecords(ids,seqs,seqfile);
     }catch(Exception const & e){
@@ -64,10 +69,31 @@ int filter_test(BBHashKmerContainer<KMerIterator<Dna5>,Dna5> &table){
         return 1;
     }
 
-    for(unsigned i = 0; i < length(ids) ; ++i){
-        std::cout << table.contains(toCString(seqs[i]));
+    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,refTableLength,21);
+    try {
+        std::ifstream inputFile("test_filter_table", std::ios::binary);
+        while (inputFile.read((char *)&table,sizeof(table)));
+        // read table data & store
+        inputFile.close();
+    } catch (Exception const & e){
+        std::cerr << "FILE ERROR" << e.what() << std::endl;
+    }    
 
-    }
+    try {
+        std::ofstream outputFile("test_filter_output.fa");
+        for(unsigned i = 0; i < length(ids) ; ++i) {
+            // std::cout << table.contains(toCString(seqs[i]));
+            if (!table.contains(toCString(seqs[i]))) {
+                outputFile << toCString(seqs[i]) << " " << seqs[i] << std::endl;
+                // writeRecord(outputFile, seqs[i])
+                // outputFile.write(toCString(seqs[i]));
+            }
+        }
+        outputFile.close();
+    } catch (Exception const & e) {
+        std::cerr << "FILE ERROR" << e.what() << std::endl;
+    }    
+
     return 0;
 
 
@@ -104,8 +130,8 @@ int reuse_build(int argc, char **argv){
         return 1;
     }
 
-
-    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,length(seqs[0])/10-21,21);
+    int refTableLength = length(seqs[0])/10-21;
+    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,refTableLength,21);
     std::cout << "TEST" << std::endl;
     for(unsigned i = 0; i < length(ids) ; ++i){
 
@@ -117,7 +143,16 @@ int reuse_build(int argc, char **argv){
 
     }
 
-    filter_test(table);
+    try {
+        std::ofstream outputFile("test_filter_table", std::ios::binary);
+        outputFile.write((char *)&table,sizeof(table));
+        outputFile.close();
+    } catch (Exception const & e){
+        std::cerr << "FILE ERROR" << e.what() << std::endl;
+    }
+
+    // filter_t est(table);
+    filter_test(refTableLength);
     return 0;
     // build hash table; binary encoding
 }
@@ -135,8 +170,6 @@ int reuse_filter(int argc, char **argv){
     unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
 
     //Parse and validate parameters
-
-
 
     //Init thread pool
     Queue pending_records, output_records;
