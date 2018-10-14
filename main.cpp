@@ -9,7 +9,7 @@
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
 #include "thread_util.h"
-#include "FastaRecord.h"
+#include "fastaRecord.h"
 #include "SharedQueue.h"
 
 
