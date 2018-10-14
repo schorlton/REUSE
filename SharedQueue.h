@@ -28,7 +28,6 @@ class SharedQueue
         void signal_done();
 
     private:
-        std::unique_ptr<T> none;
         bool done;
         std::deque<T> queue_;
         std::mutex mutex_;

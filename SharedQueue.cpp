@@ -17,7 +17,10 @@ typename SharedQueue<T>::ItemPointer SharedQueue<T>::pop()
     while (queue_.empty())
     {
         cond_.wait(mlock, [this]{return done;});
-        if (done) return none;
+        if (done) {
+            SharedQueue<T>::ItemPointer none;
+            return none;
+        }
     }
     auto item = std::make_unique(new T(std::move(queue_.front())));
     queue_.pop_front();
