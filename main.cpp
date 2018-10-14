@@ -4,6 +4,7 @@
 #include <cstring>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
+#include <seqan/basic.h>
 
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
