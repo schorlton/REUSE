@@ -19,8 +19,8 @@ template <typename Iter, typename strType>
 class BBHashKmerContainer: public AbstractKmerContainer<Iter, strType> {
 	public:
 		// default constructor
-	    BBHashKmerContainer();
-
+	    BBHashKmerContainer();   
+        ~BBHashKmerContainer();
 	    // variable constructor
 	    BBHashKmerContainer(int numThreads, double gammaFactor, int numElements);
 
@@ -36,6 +36,11 @@ class BBHashKmerContainer: public AbstractKmerContainer<Iter, strType> {
 		int numElements;
 };
 
+
+template <typename Iter, typename strType>
+BBHashKmerContainer<Iter, strType>::~BBHashKmerContainer(){
+    delete bphf;
+}
 
 template <typename Iter, typename strType>
 BBHashKmerContainer<Iter, strType>::BBHashKmerContainer() {
@@ -92,7 +97,6 @@ void BBHashKmerContainer<Iter, strType>::addRange(Iter& start, Iter& end) {
 	// printf(" example query  %lli ----->  %llu \n",data[0],idx);
 
 	// free(data);
-	// delete bphf;
 
 }
 

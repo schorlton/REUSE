@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-enum class CompressType { gzip, bzip2, uncompressed};
+enum class CompressType { gzip, bzip2, uncompressed,err};
 
 using string_param = char*;
 

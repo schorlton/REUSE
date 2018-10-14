@@ -9,7 +9,9 @@
 template <typename Iter, typename stringType>
 class AbstractKmerContainer {
 public:
+
     AbstractKmerContainer() {};
+    virtual ~AbstractKmerContainer() {};
     virtual bool contains(stringType&) = 0; //TODO change to seqan type
     virtual void add(stringType&) = 0; //TODO change to seqan type
 

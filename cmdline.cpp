@@ -42,7 +42,7 @@ CompressType parse_compress_type(char *text){
 		std::cerr << "Illegal compression type, Use gzip or bzip2!" << std::endl;
 		reuse_exit(ExitSignal::IllegalArgumentError);
 	}
-
+    return CompressType::err;
 }
 int parse_command_line_build( int argc, char** argv, ParametersBuild& params)
 {
@@ -111,6 +111,7 @@ int parse_command_line_build( int argc, char** argv, ParametersBuild& params)
 		std::cerr << "Sequence file not specified!" << std::endl;
 		reuse_exit(ExitSignal::IllegalArgumentError);
 	}
+    return 0;
 }
 
 int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
@@ -190,6 +191,7 @@ int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 			reuse_exit(ExitSignal::IllegalArgumentError);
 		}
 	}
+    return 0;
 }
 
 
