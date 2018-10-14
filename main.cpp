@@ -150,9 +150,9 @@ int reuse_build(int argc, char **argv){
     } catch (Exception const & e){
         std::cerr << "FILE ERROR" << e.what() << std::endl;
     }
+    table.save(p_build.output_filename);
+ 
 
-    // filter_t est(table);
-    filter_test(refTableLength);
     return 0;
     // build hash table; binary encoding
 }
