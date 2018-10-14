@@ -21,10 +21,10 @@ using namespace seqan;
 
 
 //Thread interface declaration
-void filter(bool&, Queue&, Queue&) {}
+void filter(Queue&, Queue&) {}
 
 /*Program to output the */
-void output(bool &done, Queue &q, char **argv){
+void output(Queue &q, char **argv){
 
 	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
 	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
@@ -94,55 +94,41 @@ int reuse_filter(int argc, char **argv){
     //Parse and validate parameters
 
 
-  //Init thread pool
-  Queue pending_records, output_records;
-  bool done = false;
-  std::vector<std::thread> thread_pool;
-  auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(done), std::ref(pending_records), std::ref(output_records));
-  increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
-  thread_pool.emplace(thread_pool.end(), output, std::ref(done), std::ref(output_records));
+    //Init thread pool
+    Queue pending_records, output_records;
+    bool done = false;
+    std::vector<std::thread> thread_pool;
+    auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
+    increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
+    thread_pool.emplace(thread_pool.end(), output, std::ref(output_records), argv); //Pass params
 
-	//Read in records to queue
-	seqan::CharString id;
-	seqan::Dna5QString seq;
-	seqan::CharString qual;
+    //Read in records to queue
+    seqan::CharString id;
+    seqan::Dna5QString seq;
+    seqan::CharString qual;
 
-	//Call sequence stream function of seqan to read from the file
-	const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
-	seqan::SeqFileIn seqFileIn(seqFileName);
+    //Call sequence stream function of seqan to read from the file
+    const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
+    seqan::SeqFileIn seqFileIn(seqFileName);
 
-  //Push record into queue
-  while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
-    try {
-      // if(norc in args) TODO
-      readRecord(id, reverseComplement(seq), qual, seqFileIn);
-      // else
-      // readRecord(id, seq, qual, seqFileIn);
-    } catch (std::exception const & e) {
-      std::cout << "ERROR: " << e.what() << std::endl;
-      return 1;
-    }
-	seqan::SequenceStream seqStream(seqFileName); //TODO: give argument to this from the arguments
+    //Push record into queue
+    while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
+        try {
+            // if(norc in args) TODO
+            reverseComplement(seq);
+            readRecord(id, seq, qual, seqFileIn);
+            // else
+            // readRecord(id, seq, qual, seqFileIn);
+        } catch (std::exception const & e) {
+            std::cout << "ERROR: " << e.what() << std::endl;
+            return 1;
+        }
 
-	if (!isGood(seqStream)) {
-		std::cerr << "ERROR: Could not open the file.\n";
-		return 1;
-	}
+        //construct a fasta/fastq object
+        FastaRecord fa = FastaRecord(id, seq);
 
-	//Push record into queue
-	while (!atEnd(seqStream)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
-		try {
-			readRecord(id, seq, seqStream);
-		} catch (std::exception const & e) {
-			std::cout << "ERROR: " << e.what() << std::endl;
-			return 1;
-		}
-
-		//construct a fasta/fastq object
-		FastaRecord fa = FastaRecord(id, seq);
-
-		//push to the pending queue
-		pending_records.push(fa);
+        //push to the pending queue
+        pending_records.push(fa);
 
         //Check queue size and increase thread pool to desaturate
         if (pending_records.size() > queue_limit) {
