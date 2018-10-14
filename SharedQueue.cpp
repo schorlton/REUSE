@@ -2,32 +2,26 @@
 // Created by Nolan Woods on 10/13/2018.
 //
 
+#include "SharedQueue.h"
+
 template <typename T>
-SharedQueue<T>::SharedQueue() = default;
+SharedQueue<T>::SharedQueue() : done(false) {}
 
 template <typename T>
 SharedQueue<T>::~SharedQueue() = default;
 
 template <typename T>
-T& SharedQueue<T>::front()
+std::unique_ptr<T> SharedQueue<T>::pop()
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     while (queue_.empty())
     {
-        cond_.wait(mlock);
+        cond_.wait(mlock, [this]{return done;});
+        if (done) return none;
     }
-    return queue_.front();
-}
-
-template <typename T>
-void SharedQueue<T>::pop()
-{
-    std::unique_lock<std::mutex> mlock(mutex_);
-    while (queue_.empty())
-    {
-        cond_.wait(mlock);
-    }
+    auto item = std::make_unique(new T(std::move(queue_.front())));
     queue_.pop_front();
+    return item;
 }
 
 template <typename T>
@@ -48,6 +42,11 @@ void SharedQueue<T>::push(T &&item)
     mlock.unlock();     // unlock before notificiation to minimize mutex con
     cond_.notify_one(); // notify one waiting thread
 
+}
+
+template <typename T>
+void SharedQueue<T>::signal_done() {
+    this->done = true;
 }
 
 template <typename T>

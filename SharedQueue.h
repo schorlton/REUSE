@@ -17,17 +17,18 @@ class SharedQueue
         SharedQueue();
         ~SharedQueue();
 
-        T& front();
-        void pop();
+        std::unique_ptr<T> pop();
 
         void push(const T &item);
         void push(T &&item);
 
         unsigned int size(bool blocking = true);
 
-        bool empty();
+        void signal_done();
 
     private:
+        std::unique_ptr<T> none;
+        bool done;
         std::deque<T> queue_;
         std::mutex mutex_;
         std::condition_variable cond_;
