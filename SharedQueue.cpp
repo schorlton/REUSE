@@ -22,8 +22,8 @@ typename SharedQueue<T>::ItemPointer SharedQueue<T>::pop()
             return none;
         }
     }
-    ItemPointer item;
-    std::swap(item, queue_.front());
+    ItemPointer item = std::move(queue_.front());
+    //std::swap(item, queue_.front());
     queue_.pop_front();
     return item;
 }
