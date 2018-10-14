@@ -12,7 +12,7 @@ REUSE is a k-mer based tool for filtration of reads in sequencing datasets that 
 
 
 ## Software Requirements
-REUSE will run on most flavo(u)rs of Linux. Prerequisites include:
+REUSE will run on most unix-based systems including Linux and Mac OS. Prerequisites include:
 - zlib1g-dev
 - libpthread-stubs0-dev
 - libbz2-1.0
