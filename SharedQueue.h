@@ -7,7 +7,6 @@
 #define REUSE_SHAREDQUEUE_H
 
 #include <queue>
-#include <experimental/optional>
 #include <mutex>
 #include <condition_variable>
 
@@ -18,14 +17,18 @@ class SharedQueue
         SharedQueue();
         ~SharedQueue();
 
-        T& pop(bool& predicate);
+        std::unique_ptr<T> pop();
 
         void push(const T &item);
         void push(T &&item);
 
         unsigned int size(bool blocking = true);
 
+        void signal_done();
+
     private:
+        std::unique_ptr<T> none;
+        bool done;
         std::deque<T> queue_;
         std::mutex mutex_;
         std::condition_variable cond_;
