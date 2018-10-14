@@ -26,8 +26,11 @@ void filter(Queue&, Queue&) {}
 /*Program to output the */
 void output(Queue &queue, const ParametersFilter &params){
 
-	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
-	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
+	seqan::SeqFileOut seqFileOut;
+	if (params.is_stdout)
+	    seqan::open(seqFileOut, std::cout);
+	else
+	    seqan::open(seqFileOut, params.output_folder_name);
 
 	// while the boolean is 1 and the Queue is non-empty
 	Queue::ItemPointer item;
@@ -100,7 +103,7 @@ int reuse_filter(int argc, char **argv){
     std::vector<std::thread> thread_pool;
     auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
-    thread_pool.emplace(thread_pool.end(), output, std::ref(output_records), argv); //Pass params
+    thread_pool.emplace(thread_pool.end(), output, std::ref(output_records), params); //Pass params
 
     //Read in records to queue
     seqan::CharString id;
