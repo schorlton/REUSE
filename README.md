@@ -21,7 +21,17 @@ REUSE will run on most unix-based systems including Linux and Mac OS. Prerequisi
 - cmake (≥3.5)
 
 ## Installation
-Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest
+Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest, extract and then run the `reuse` binay:
+
+`wget https://github.com/chorltsd/REUSE/releases/latest/reuse_linux-x64.tar.gz`
+
+`tar xzvf reuse_linux-x64.tar.gz`
+
+`cd reuse`
+
+`./reuse -h'`
+
+
 Alternatively, this repository can be cloned and compiled using cmake:
 
 `git clone https://github.com/chorltsd/REUSE.git`
