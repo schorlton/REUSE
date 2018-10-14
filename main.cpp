@@ -46,11 +46,11 @@ void output(Queue &queue, const ParametersFilter &params){
 
 int reuse_build(int argc, char **argv){
 
-    std::cout << "Building reference......"<< std::endl;
+    std::cerr << "Building reference......"<< std::endl;
     ParametersBuild p_build;
     parse_command_line_build( argc, argv, p_build);
-    std::cout << "number of thread "<<p_build.threads<< std::endl;
-    std::cout <<"input " << p_build.seq_filename<< std::endl;
+    std::cerr << "number of thread "<<p_build.threads<< std::endl;
+    std::cerr <<"input " << p_build.seq_filename<< std::endl;
 
     CharString seqFileName = "data/chrT.fa";
 
@@ -85,12 +85,12 @@ int reuse_build(int argc, char **argv){
 }
 
 int reuse_filter(int argc, char **argv){
-    std::cout << "Filtering sequence......"<< std::endl;
+    std::cerr << "Filtering sequence......"<< std::endl;
     ParametersFilter params;
     parse_command_line_filter( argc, argv, params);
-    std::cout << "number of thread "<<params.threads<< std::endl;
-    std::cout <<"input " << params.seq_filename_1<< std::endl;
-    std::cout <<"paired? " << params.paired<< std::endl;
+    std::cerr << "number of thread "<<params.threads<< std::endl;
+    std::cerr <<"input " << params.seq_filename_1<< std::endl;
+    std::cerr <<"paired? " << params.paired<< std::endl;
     //TODO replace with input parameters
     unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
     unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
@@ -126,7 +126,7 @@ int reuse_filter(int argc, char **argv){
             // else
             // readRecord(id, seq, qual, seqFileIn);
         } catch (std::exception const & e) {
-            std::cout << "ERROR: " << e.what() << std::endl;
+            std::cerr << "ERROR: " << e.what() << std::endl;
             return 1;
         }
 
