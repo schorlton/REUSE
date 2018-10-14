@@ -3,6 +3,7 @@
 
 #include <cstring>
 
+
 enum class ExitSignal{
 	Success,
 	IllegalArgumentError

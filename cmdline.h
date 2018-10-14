@@ -3,27 +3,43 @@
 
 #include "common.h"
 
-enum class CompressType { gzip, bzip2, uncompressed};
+enum class CompressType { gzip, bzip2, uncompressed,err};
 
+using string_param = char*;
 
+struct ParametersCommon{
 
-struct parameters{
-	char *seq_filename;
-	char *index_filename;
-	char *output_filename;
-	char *log_filename;
-
+	string_param output_folder_name;
 	int threads;
 	long ram_limit;
-	CompressType zip;
-
-	int min_kmer;
-	bool paired;
+	bool is_stdin;
+	ParametersCommon();
 };
 
+struct ParametersBuild:ParametersCommon{
+	string_param seq_filename;
+	CompressType zip;
+	int kmer_length;
+	string_param mask;
 
-int parse_command_line( int, char**, parameters*);
-void parse_bam_list( parameters** params);
+	ParametersBuild();
+
+};
+struct ParametersFilter:ParametersCommon{
+	string_param log_filename;
+	string_param seq_filename_1;
+	string_param seq_filename_2;
+	string_param index_filename;
+	CompressType zip;
+	bool paired;
+	bool is_stdout;
+	int min_kmer_threshhold;
+
+	ParametersFilter();
+};
+int parse_command_line_common(int, char**, ParametersCommon&);
+int parse_command_line_build( int, char**, ParametersBuild&);
+int parse_command_line_filter( int, char**, ParametersFilter&);
 void print_help( void);
 
 #endif

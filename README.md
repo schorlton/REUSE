@@ -1,44 +1,48 @@
 # REUSE
 Rapid Elimination of Useless Sequences
 
+RESUSE is a k-mer based filtering tool for extracting foreign sequences from NGS datasets that do not match a reference sequence.
+REUSE takes FASTA/FASTAQ file inputs with reference sequences, and outputs k-mer filtered mismatches.
+
+
 ## Quick start
-reuse build hg38.fa hg38
+`reuse build hg38.fa hg38`
 
-reuse filter -x hg38 -U input.fq -o filtered.fq
+`reuse filter -x hg38 -U input.fq -o filtered.fq`
 
-## Getting REUSE
 
+## Software Requirements
 REUSE will run on most flavo(u)rs of Linux. Prerequisites include:
 - pigz
 
-The easiest way to get REUSE is by downloading the binary from https://github.com/chorltsd/REUSE/releases/latest
-Alternatively, the source can be downloaded and compiled.
-
-## Building an index
--Identify all k-mers within a reference dataset and store that library to disk.
-
--Optionally filter k-mers from the reference that match to a target dataset so as to reduce false positive filtering. For example, filter all viral k-mers from the human genome so as not to filter reads originating from viruses in the sample.
+<!!!!> What compiler/interpreter is needed (e.g. GCC v4.7, Python v3.6)<marked>
+<!!!!> What libraries you depend on (e.g. Boost v1.58, NumPy v1.15)
 
 
+## Installation
+Download the binary from https://github.com/chorltsd/REUSE/releases/latest
+Alternatively, this repository can be cloned:
+`git clone https://github.com/chorltsd/REUSE.git REUSE`
+
+<!!!!> further instructions/example install:
 ### Usage:
-reuse build [options] <reference_in> <index>
+reuse build [options] -o \<output_path\>
 
-### Main arguments
-<reference_in> = A comma-separated list of FASTA files containing the reference sequences to be aligned to, or, if -c is specified, the sequences themselves. E.g., <reference_in> might be chr1.fa,chr2.fa,chrX.fa,chrY.fa, or, if -c is specified, this might be GGTCATCCT,ACGGGTCGT,CCGTTCTATGCGGCTTA.
-
-<index> = Location to save index k-mer dataset to disk
+-o = Location to save index k-mer dataset to disk
 
 
 ### Options:
--p/--threads threads (default: 1)
+-i = reference_in.  A comma-separated list of FASTA files containing the reference sequences to be aligned to.  (default: read from STDIN )
 
--m maximum RAM usage (default: all available RAM)
+-o = Location to save index k-mer dataset to disk
+
+-p/--threads =Number of threads used (default: 8)
+
+-r = Maximum RAM usage in MB (default: 400)
 
 -k = k-mer length (default: 21)
 
--c = The reference sequences are given on the command line. I.e. <reference_in> is a comma-separated list of sequences rather than a list of FASTA files.
-
--h = Hide (ie mask) k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest.
+-m = Mask k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest.
 
 -g = Compress index when saving to disk. May take longer to generate the index and load when searching.
 
@@ -52,21 +56,16 @@ reuse build [options] <reference_in> <index>
 -Eliminate all reads or read pairs when 1 or more k-mers is found within the read
 
 ### Usage:
-reuse filter [options] -x <index> {-1 <m1> -2 <m2> | -U <r> | --interleaved \<i\>\}
-
-### Main arguments
--x <index>
+reuse filter [options] -x \<index\> -1 \<m1\> -2 \<m2\> 
+ ### Main arguments
+-x \<index\>
 The basename of the index for the reference dataset. This can either be generated with reuse-build (.db.gz) or with an alternative program for k-mer counting, such as Jellyfish, KAnalyze or others. K-mer count files in Jellyfish dump format/KAnalyze default output format (two column text file for both) may be compressed with gzip.
 
--1 <m1>
+ -1 \<m1\>
 Comma-separated list of files containing mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m2>. Reads may be a mix of different lengths. If - is specified, reuse will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format.
-
--2 <m2>
+ 
+ -2 \<m2\>
 Comma-separated list of files containing mate 2s (filename usually includes _2), e.g. -2 flyA_2.fq,flyB_2.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m1>. Reads may be a mix of different lengths. If - is specified, resuse will read the mate 2s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format.
-
--U <r>
-Comma-separated list of files containing unpaired reads to be aligned, e.g. lane1.fq,lane2.fq,lane3.fq,lane4.fq. Reads may be a mix of different lengths. If - is specified, reuse gets the reads from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format.
-
 
 ### Options:
 -o <output> = Save reads not matching the k-mer filter to <output>.fast(q/a) for single-end reads, or <output>_1.fast(q/a) and <output>_2.fast(q/a) for paired-end reads. By default, reads are output to STDOUT.
@@ -77,15 +76,15 @@ Comma-separated list of files containing unpaired reads to be aligned, e.g. lane
 
 -z <command> = Compress outputted reads with alternate command, such as "bzip2"
 
--m = Maximum RAM usage (default: all available RAM)
+-r = Maximum RAM usage (default: all available RAM)
 
 -p/--threads = Threads to use (default: available number of threads)
 
 -l <log> = Log file
   
--mk = Minimum number of k-mers per read to filter it (default: 1)
+-k = Minimum number of k-mers per read to filter it (default: 1)
 
--sp = Split pairs
+-s = Split pairs
 
 
 ## Performance optimization:
