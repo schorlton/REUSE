@@ -24,7 +24,7 @@ using namespace seqan;
 void filter(Queue&, Queue&) {}
 
 /*Program to output the */
-void output(Queue &queue, ParametersFilter params;){
+void output(Queue &queue, const ParametersFilter &params){
 
 	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
 	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
