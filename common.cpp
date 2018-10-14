@@ -1,8 +1,10 @@
 #include "common.h"
+#include <iostream>
 
 #include <cstdlib>
 
 void reuse_exit(ExitSignal signal){
+        std::cout << "" << std::endl;
 	exit(static_cast<int>(signal));
 }
 
