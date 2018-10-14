@@ -144,7 +144,7 @@ int reuse_build(int argc, char **argv){
     }
 
     try {
-        std::ofstream outputFile("test_filter_table", std::ios::binary);
+        std::ofstream outputFile("data/test_filter_table", std::ios::binary);
         outputFile.write((char *)&table,sizeof(table));
         outputFile.close();
     } catch (Exception const & e){
