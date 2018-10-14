@@ -97,7 +97,6 @@ int reuse_filter(int argc, char **argv){
 
     //Init thread pool
     Queue pending_records, output_records;
-    bool done = false;
     std::vector<std::thread> thread_pool;
     auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO

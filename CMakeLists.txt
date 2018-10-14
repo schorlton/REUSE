@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
-INCLUDE_DIRECTORIES(lib)
+INCLUDE_DIRECTORIES(SYSTEM lib)
 
 add_executable(reuse main.cpp SharedQueue.h cmdline.cpp common.cpp AbstractKmerContainer.h BBHashKmerContainer.h kmers.h thread_util.cpp thread_util.h)
 
