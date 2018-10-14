@@ -38,14 +38,14 @@ int reuse_filter(int argc, char **argv){
 }
 
 int main( int argc, char **argv) {
-    std::cout << "Hello, World!" << std::endl;
+    std::cerr << "Hello, World!" << std::endl;
     //Parse and validate parameters
 
     if(argc == 1){
 
     }
     if (argv[1]==NULL){
-        std::cout << "Please have \"build\" or \"filter\" as argument" << std::endl;
+        std::cerr << "Please have \"build\" or \"filter\" as argument" << std::endl;
         print_help();
         reuse_exit(ExitSignal::IllegalArgumentError);
     }

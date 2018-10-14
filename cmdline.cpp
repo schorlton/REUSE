@@ -186,7 +186,7 @@ int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 		if(params.seq_filename_2 == NULL){
 			params.is_stdin=true;
 		}else {
-			std::cout << "you need to have filename for both -1 and -2" << std::endl;
+			std::cerr << "you need to have filename for both -1 and -2" << std::endl;
 			reuse_exit(ExitSignal::IllegalArgumentError);
 		}
 	}
@@ -195,33 +195,33 @@ int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 
 
 void print_help(){
-	std::cout << "Help" << std::endl;
-	std::cout << "Usage: reuse <command> [options]"<< std::endl;
-    std::cout << " "<< std::endl;
-    std::cout << "Command"<< std::endl;
-    std::cout << "      build	Identify all k-mers within a reference dataset and store that library to disk"<< std::endl;
-    std::cout << "              options: reuse build [options] "<< std::endl;
-	std::cout << "              -i = reference_in. A comma-separated list of FASTA files containing the reference sequences to be aligned to. (default: read from STDIN ) "<< std::endl;
-	std::cout << "              -o = Location to save index k-mer dataset to disk "<< std::endl;
-	std::cout << "              -p/--threads =Number of threads used (default: 8)"<< std::endl;
-	std::cout << "              -r = Maximum RAM usage in MB (default: 400)"<< std::endl;
-	std::cout << "              -k = k-mer length (default: 21)"<< std::endl;
-	std::cout << "              -m = Mask k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest."<< std::endl;
-	std::cout << "              -g = Compress index when saving to disk. May take longer to generate the index and load when searching."<< std::endl;
-	std::cout << "              -h/--help = Print usage information and quit"<< std::endl;
-	std::cout << "              -v/--version = Print version information and quit"<< std::endl;
-	std::cout << "      filter"<< std::endl;
-	std::cout << "              options: reuse filter [options] -x <index> -1 <m1> -2 <m2>"<< std::endl;
-	std::cout << "              -x <index> The basename of the index for the reference dataset. This can either be generated with reuse-build (.db.gz) or with an alternative program for k-mer counting, such as Jellyfish, KAnalyze or others. K-mer count files in Jellyfish dump format/KAnalyze default output format (two column text file for both) may be compressed with gzip."<< std::endl;
-	std::cout << "              -1 <m1> Comma-separated list of files containing mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in . Reads may be a mix of different lengths. If - is specified, reuse will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format."<< std::endl;
-	std::cout << "              -2 <m2> Comma-separated list of files containing mate 2s (filename usually includes _2), e.g. -2 flyA_2.fq,flyB_2.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in . Reads may be a mix of different lengths. If - is specified, resuse will read the mate 2s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format."<< std::endl;
-	std::cout << "              -o = Save reads not matching the k-mer filter to .fast(q/a) for single-end reads, or _1.fast(q/a) and _2.fast(q/a) for paired-end reads. By default, reads are output to STDOUT."<< std::endl;
-	std::cout << "              -f = Save reads matching the k-mer filter to .fast(q/a) for single-end reads, or _1.fast(q/a) and _2.fast(q/a) for paired-end reads. By default, reads are discarded."<< std::endl;
-	std::cout << "              -g = Compress outputted reads"<< std::endl;
-	std::cout << "              -r = Maximum RAM usage (default: all available RAM)" << std::endl;
-	std::cout << "              -p/--threads = Threads to use (default: available number of threads)"<< std::endl;
-	std::cout << "              -l = Log file"<< std::endl;
-	std::cout << "              -k = Minimum number of k-mers per read to filter it (default: 1)"<< std::endl;
+	std::cerr << "Help" << std::endl;
+	std::cerr << "Usage: reuse <command> [options]"<< std::endl;
+    std::cerr << " "<< std::endl;
+    std::cerr << "Command"<< std::endl;
+    std::cerr << "      build	Identify all k-mers within a reference dataset and store that library to disk"<< std::endl;
+    std::cerr << "              options: reuse build [options] "<< std::endl;
+	std::cerr << "              -i = reference_in. A comma-separated list of FASTA files containing the reference sequences to be aligned to. (default: read from STDIN ) "<< std::endl;
+	std::cerr << "              -o = Location to save index k-mer dataset to disk "<< std::endl;
+	std::cerr << "              -p/--threads =Number of threads used (default: 8)"<< std::endl;
+	std::cerr << "              -r = Maximum RAM usage in MB (default: 400)"<< std::endl;
+	std::cerr << "              -k = k-mer length (default: 21)"<< std::endl;
+	std::cerr << "              -m = Mask k-mers found in this fasta file from the reference database. This option is used to minimize false positive filtering of related species or species of interest."<< std::endl;
+	std::cerr << "              -g = Compress index when saving to disk. May take longer to generate the index and load when searching."<< std::endl;
+	std::cerr << "              -h/--help = Print usage information and quit"<< std::endl;
+	std::cerr << "              -v/--version = Print version information and quit"<< std::endl;
+	std::cerr << "      filter"<< std::endl;
+	std::cerr << "              options: reuse filter [options] -x <index> -1 <m1> -2 <m2>"<< std::endl;
+	std::cerr << "              -x <index> The basename of the index for the reference dataset. This can either be generated with reuse-build (.db.gz) or with an alternative program for k-mer counting, such as Jellyfish, KAnalyze or others. K-mer count files in Jellyfish dump format/KAnalyze default output format (two column text file for both) may be compressed with gzip."<< std::endl;
+	std::cerr << "              -1 <m1> Comma-separated list of files containing mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in . Reads may be a mix of different lengths. If - is specified, reuse will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format."<< std::endl;
+	std::cerr << "              -2 <m2> Comma-separated list of files containing mate 2s (filename usually includes _2), e.g. -2 flyA_2.fq,flyB_2.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in . Reads may be a mix of different lengths. If - is specified, resuse will read the mate 2s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format."<< std::endl;
+	std::cerr << "              -o = Save reads not matching the k-mer filter to .fast(q/a) for single-end reads, or _1.fast(q/a) and _2.fast(q/a) for paired-end reads. By default, reads are output to STDOUT."<< std::endl;
+	std::cerr << "              -f = Save reads matching the k-mer filter to .fast(q/a) for single-end reads, or _1.fast(q/a) and _2.fast(q/a) for paired-end reads. By default, reads are discarded."<< std::endl;
+	std::cerr << "              -g = Compress outputted reads"<< std::endl;
+	std::cerr << "              -r = Maximum RAM usage (default: all available RAM)" << std::endl;
+	std::cerr << "              -p/--threads = Threads to use (default: available number of threads)"<< std::endl;
+	std::cerr << "              -l = Log file"<< std::endl;
+	std::cerr << "              -k = Minimum number of k-mers per read to filter it (default: 1)"<< std::endl;
 
 
 
