@@ -107,3 +107,6 @@ By default, reads are output to STDOUT in the same format as they are input (eg.
 
 ## Performance optimization:
 REUSE will run fastest with filtration after the first k-mer is found (-mk 1), maximum thread and RAM usage, and a lower k-mer size. Lower k-mer sizes reduce the index size but are less specific at differentiating species.
+
+## License 
+This project is licensed under the GNU General Public License - see the [LICENSE.md](LICENSE.md) file for details
