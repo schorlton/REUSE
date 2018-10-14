@@ -4,7 +4,7 @@
 #include <seqan/sequence.h>
 
 
-using encode_type = unsigned long int;
+using encode_type = unsigned long long int;
 
 
 template <typename T>
@@ -56,7 +56,7 @@ class KMerIterator{
         
         KMerIterator operator++(){ 
             ptr += 1; 
-            return ptr;
+            return *this;
         }
         KMerIterator operator++(int val){ 
             KMerIterator i = *this; 
