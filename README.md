@@ -29,7 +29,7 @@ Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases
 
 `cd reuse`
 
-`./reuse -h'`
+`./reuse -h`
 
 
 Alternatively, this repository can be cloned and compiled using cmake:
