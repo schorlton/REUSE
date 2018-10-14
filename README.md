@@ -21,7 +21,9 @@ REUSE will run on most flavo(u)rs of Linux. Prerequisites include:
 Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest
 Alternatively, this repository can be cloned:
 `git clone https://github.com/chorltsd/REUSE.git REUSE`
+
 `cd REUSE`
+
 `make`
 
 ### Usage:
