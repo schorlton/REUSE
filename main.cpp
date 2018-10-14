@@ -43,9 +43,9 @@ int reuse_build(int argc, char **argv){
 }
 
 int reuse_filter(int argc, char **argv){
-  //TODO replace with input parameters
-  unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
-  unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
+    //TODO replace with input parameters
+    unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
+    unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
 
     //Parse and validate parameters
 
@@ -63,9 +63,9 @@ int reuse_filter(int argc, char **argv){
 	seqan::Dna5QString seq;
 	seqan::CharString qual;
 
-  //Call sequence stream function of seqan to read from the file
-  seqan::CharString seqFileName = "data/chrY.fa"; //TODO: replace with param
-  seqan::SeqFileIn seqFileIn(toCString(seqFileName));
+	//Call sequence stream function of seqan to read from the file
+	const char* seqFileName = "data/chrY.fa"; //TODO: replace with param
+	seqan::SeqFileIn seqFileIn(seqFileName);
 
   //Push record into queue
   while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
