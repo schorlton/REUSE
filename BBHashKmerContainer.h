@@ -61,13 +61,13 @@ BBHashKmerContainer<Iter, charType>::BBHashKmerContainer(int numThreads, double 
 template <typename Iter, typename charType>
 bool BBHashKmerContainer<Iter, charType>::contains(charType* s) {
 	//TODO change to seqan type
-    KMerIterator<Dna5> iter((toCString(s), kmers_size));
+    KMerIterator<charType> iter(s, kmers_size);
 	// kmer_encode(iter, iter+kmers_size);
 	//query mphf like this
 	uint64_t idx = bphf->lookup(kmer_encode(iter, iter+kmers_size));
 	// printf(" example query  %lli ----->  %llu \n",data[0],idx);
 
-	return idx != static_cast<uint64_t>(-1)
+	return idx != static_cast<uint64_t>(-1);
 }
 
 template <typename Iter, typename charType>
