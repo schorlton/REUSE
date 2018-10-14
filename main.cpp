@@ -34,7 +34,7 @@ void output(Queue &queue, const ParametersFilter &params){
 	if (params.is_stdout)
 	    seqan::open(seqFileOut, std::cout);
 	else
-	    seqan::open(seqFileOut, params.output_folder_name);
+	    seqan::open(seqFileOut, params.output_filename);
 
 	// while the boolean is 1 and the Queue is non-empty
 	Queue::ItemPointer item;
