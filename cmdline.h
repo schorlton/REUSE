@@ -9,7 +9,7 @@ using string_param = char*;
 
 struct ParametersCommon{
 
-	string_param output_folder_name;
+	string_param output_filename;
 	int threads;
 	long ram_limit;
 	bool is_stdin;

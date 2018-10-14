@@ -9,9 +9,9 @@
 #include "cmdline.h"
 
 ParametersCommon::ParametersCommon(){
-	output_folder_name = NULL;
+	output_filename = NULL;
 	is_stdin =true;
-	threads = 8;
+	threads = 1;
 	ram_limit=4000;
 }
 
@@ -60,11 +60,7 @@ int parse_command_line_build( int argc, char** argv, ParametersBuild& params)
 			{0       			 	, 0	,                0,  0 }
 	};
 
-	if( argc == 1)
-	{
-		print_help();
-		return -1;
-	}
+
  	int o;
 	int index;
 	while( ( o = getopt_long( argc, argv, "i:o:p:r:k:m:ghv", long_options, &index)) != -1)
@@ -76,7 +72,7 @@ int parse_command_line_build( int argc, char** argv, ParametersBuild& params)
 				params.is_stdin = false;
 				break;
 			case 'o':
-				set_str( &( params.output_folder_name), optarg);
+				set_str( &( params.output_filename), optarg);
 				break;
 			case 'p':
 				params.threads = atoi(optarg);
@@ -107,9 +103,8 @@ int parse_command_line_build( int argc, char** argv, ParametersBuild& params)
 			break; 
 		}
 	}
-	if (params.seq_filename == NULL){
-		std::cerr << "Sequence file not specified!" << std::endl;
-		reuse_exit(ExitSignal::IllegalArgumentError);
+	if (params.output_filename == NULL){
+        set_str(&(params.output_filename),"table.filter");
 	}
     return 0;
 }
@@ -155,7 +150,7 @@ int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 				params.paired = true;
 				break;
 			case 'o':
-				set_str( &( params.output_folder_name), optarg);
+				set_str( &( params.output_filename), optarg);
 				params.is_stdout = false;
 				break;
 			case 'p':
