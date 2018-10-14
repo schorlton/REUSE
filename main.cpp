@@ -232,7 +232,6 @@ int reuse_filter(int argc, char **argv){
 }
 
 int main( int argc, char **argv) {
-    std::cerr << "Hello, World!" << std::endl;
     //Parse and validate parameters
 
     if(argc == 1){
