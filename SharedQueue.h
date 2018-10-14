@@ -20,8 +20,7 @@ class SharedQueue
 
         ItemPointer pop();
 
-        void push(const T &item);
-        void push(T &&item);
+        void push(ItemPointer item);
 
         unsigned int size(bool blocking = true);
 
@@ -29,7 +28,7 @@ class SharedQueue
 
     private:
         bool done;
-        std::deque<T> queue_;
+        std::deque<ItemPointer> queue_;
         std::mutex mutex_;
         std::condition_variable cond_;
 };

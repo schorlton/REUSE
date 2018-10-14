@@ -125,10 +125,10 @@ int reuse_filter(int argc, char **argv){
         }
 
         //construct a fasta/fastq object
-        FastaRecord fa = FastaRecord(id, seq);
+        Queue::ItemPointer fa = std::make_unique<FastaRecord>(id, seq);
 
         //push to the pending queue
-        pending_records.push(fa);
+        pending_records.push(std::move(fa));
 
         //Check queue size and increase thread pool to desaturate
         if (pending_records.size() > queue_limit) {

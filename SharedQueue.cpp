@@ -22,23 +22,14 @@ typename SharedQueue<T>::ItemPointer SharedQueue<T>::pop()
             return none;
         }
     }
-    auto item = std::make_unique(new T(std::move(queue_.front())));
+    ItemPointer item;
+    std::swap(item, queue_.front());
     queue_.pop_front();
     return item;
 }
 
 template <typename T>
-void SharedQueue<T>::push(const T &item)
-{
-    std::unique_lock<std::mutex> mlock(mutex_);
-    queue_.push_back(item);
-    mlock.unlock();     // unlock before notificiation to minimize mutex con
-    cond_.notify_one(); // notify one waiting thread
-
-}
-
-template <typename T>
-void SharedQueue<T>::push(T &&item)
+void SharedQueue<T>::push(ItemPointer item)
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     queue_.push_back(std::move(item));
