@@ -11,7 +11,7 @@ template <typename T>
 SharedQueue<T>::~SharedQueue() = default;
 
 template <typename T>
-std::unique_ptr<T> SharedQueue<T>::pop()
+typename SharedQueue<T>::ItemPointer SharedQueue<T>::pop()
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     while (queue_.empty())

@@ -14,10 +14,11 @@ template <typename T>
 class SharedQueue
 {
     public:
+        using ItemPointer = std::unique_ptr<T>;
         SharedQueue();
         ~SharedQueue();
 
-        std::unique_ptr<T> pop();
+        ItemPointer pop();
 
         void push(const T &item);
         void push(T &&item);
