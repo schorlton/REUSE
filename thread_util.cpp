@@ -2,6 +2,7 @@
 // Created by Nolan Woods on 10/13/2018.
 //
 
+#include <iostream>
 #include "thread_util.h"
 
 #ifdef _WIN32
