@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(lib)
 add_executable(reuse main.cpp SharedQueue.h cmdline.cpp common.cpp thread_util.cpp thread_util.h)
 
 find_package (Threads)
+target_link_libraries (reuse ${CMAKE_THREAD_LIBS_INIT})
 
 find_package( ZLIB REQUIRED )
 if ( ZLIB_FOUND )
@@ -15,4 +16,3 @@ if ( ZLIB_FOUND )
     target_link_libraries( reuse ${ZLIB_LIBRARIES} )
 endif( ZLIB_FOUND )
 
-target_link_libraries (reuse ${CMAKE_THREAD_LIBS_INIT})
