@@ -33,20 +33,23 @@ int filter_test(int refTableLength){
     }
 
     BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,refTableLength,21);
-    try (std::ifstream inputFile = ("test_filter_table", std::ios::binary)) {
-        while (inputFile.read(table)) {
+    try {
+        std::ifstream inputFile("test_filter_table", std::ios::binary);
+        while (inputFile.read((char *)&table,sizeof(table)));
         // read table data & store
-        }
         inputFile.close();
     } catch (Exception const & e){
         std::cerr << "FILE ERROR" << e.what() << std::endl;
     }    
 
-    try (std::ofstream outputFile = ("test_filter_output.fa")) {
+    try {
+        std::ofstream outputFile("test_filter_output.fa");
         for(unsigned i = 0; i < length(ids) ; ++i) {
             // std::cout << table.contains(toCString(seqs[i]));
             if (!table.contains(toCString(seqs[i]))) {
-                outputFile.write(toCString(seqs[i]));
+                outputFile << toCString(seqs[i]) << " " << seqs[i] << std::endl;
+                // writeRecord(outputFile, seqs[i])
+                // outputFile.write(toCString(seqs[i]));
             }
         }
         outputFile.close();
@@ -102,8 +105,9 @@ int reuse_build(int argc, char **argv){
 
     }
 
-    try (std::ofstream outputFile = ("test_filter_table", std::ios::binary)) {
-        outputFile.write(table);
+    try {
+        std::ofstream outputFile("test_filter_table", std::ios::binary);
+        outputFile.write((char *)&table,sizeof(table));
         outputFile.close();
     } catch (Exception const & e){
         std::cerr << "FILE ERROR" << e.what() << std::endl;
