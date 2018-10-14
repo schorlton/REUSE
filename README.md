@@ -5,13 +5,9 @@ REUSE is a k-mer based tool for filtration of reads in sequencing datasets that 
 `reuse build` takes a reference fasta file as input, and ouputs a hashed index file. `reuse filter` takes FASTA/FASTQ file inputs, along with the hashed index file, and outputs k-mer filtered reads in a user-specified format. Common applications of REUSE include filtration of host, contamination, PhiX or ribosomal sequences.
 
 
-## Quick start
-`reuse build hg38.fa hg38`
+## Getting Started
 
-`reuse filter -x hg38 -U input.fq -o filtered.fq`
-
-
-## Software Requirements
+### Prerequisites
 REUSE will run on most unix-based systems including Linux and Mac OS. Prerequisites include:
 - zlib1g-dev
 - libpthread-stubs0-dev
@@ -20,7 +16,7 @@ REUSE will run on most unix-based systems including Linux and Mac OS. Prerequisi
 - c++ (≥14)
 - cmake (≥3.5)
 
-## Installation
+### Installation
 Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest, extract and then run the `reuse` binary:
 
 `wget https://github.com/chorltsd/REUSE/releases/latest/reuse_linux-x64.tar.gz`
@@ -42,6 +38,12 @@ Alternatively, this repository can be cloned and compiled using cmake:
 
 ### Usage:
 `reuse build [options] -o <output_file>`
+
+Example:
+
+`reuse build hg38.fa hg38`
+
+`reuse filter -x hg38 -U input.fq -o filtered.fq`
 
 
 ### Options:
@@ -76,10 +78,10 @@ Alternatively, this repository can be cloned and compiled using cmake:
 The index file for the reference dataset, generated with `reuse build`
 
  -1 \<m1\>
-Comma-separated list of files containing either unpaired reads or mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. If -2 \<m2\> is specified, it is assumed that -1 \<m1\> represents mate 1s. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m2>. Reads may be a mix of different lengths. If - is specified, REUSE will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format, and may be gzipped or bzip2ed. REUSE detects these formats by defauly.
+Comma-separated list of files containing either unpaired reads or mate 1s (filename usually includes _1), e.g. -1 flyA_1.fq,flyB_1.fq. If -2 \<m2\> is specified, it is assumed that -1 \<m1\> represents mate 1s. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m2>. Reads may be a mix of different lengths. If - is specified, REUSE will read the mate 1s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format, and may be gzipped or bzip2ed. REUSE detects these formats by default.
  
  -2 \<m2\>
-Comma-separated list of files containing mate 2s (filename usually includes _2), e.g. -2 flyA_2.fq,flyB_2.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m1>. Reads may be a mix of different lengths. If - is specified, resuse will read the mate 2s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format, and may be gzipped or bzip2ed. REUSE detects these formats by defauly.
+Comma-separated list of files containing mate 2s (filename usually includes _2), e.g. -2 flyA_2.fq,flyB_2.fq. Sequences specified with this option must correspond file-for-file and read-for-read with those specified in <m1>. Reads may be a mix of different lengths. If - is specified, resuse will read the mate 2s from the “standard in” or “stdin” filehandle. Reads may be in FASTQ or FASTA format, and may be gzipped or bzip2ed. REUSE detects these formats by default.
 
 ### Options:
 -o \<output\> = Save reads not matching the k-mer filter to <output>.fast(q/a) for single-end reads, or <output>_1.fast(q/a) and <output>_2.fast(q/a) for paired-end reads.
