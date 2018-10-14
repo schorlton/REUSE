@@ -6,14 +6,14 @@
 #define REUSE_ABSTRACTKMERCONTAINER_H
 
 
-template <typename Iter, typename stringType>
+template <typename Iter, typename charType>
 class AbstractKmerContainer {
 public:
 
     AbstractKmerContainer() {};
     virtual ~AbstractKmerContainer() {};
-    virtual bool contains(stringType&) = 0; //TODO change to seqan type
-    virtual void add(stringType&) = 0; //TODO change to seqan type
+    virtual bool contains(charType *) = 0; //TODO change to seqan type
+    virtual void add(charType *, int length) = 0; //TODO change to seqan type
 
     virtual void addRange(Iter&, Iter&) = 0;
 };
