@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <random>
 #include <algorithm>
+#include <iostream>
 
 //tells bbhash to use included hash function working on u_int64_t input keys :
 typedef boomphf::SingleHashFunctor<u_int64_t>  hasher_t;
@@ -43,6 +44,21 @@ private:
 
 
 template <typename Iter, typename charType>
+void BBHashKmerContainer<Iter,charType>::load(char *fname){
+
+
+    std::ifstream ifn(fname);
+
+    bphf->load(ifn);
+}
+template <typename Iter, typename charType>
+void BBHashKmerContainer<Iter,charType>::save(char *fname){
+
+    std::ofstream out(fname);
+
+    bphf->save(out);
+}
+template <typename Iter, typename charType>
 BBHashKmerContainer<Iter, charType>::~BBHashKmerContainer(){
     delete bphf;
 }
@@ -59,7 +75,7 @@ BBHashKmerContainer<Iter, charType>::BBHashKmerContainer(int numThreads, double 
 	this->numElements = numElements;
 	kmers_size = k;
 
-	bphf = nullptr;
+	bphf = new boomphf::mphf<u_int64_t,hasher_t>();
 }
 
 template <typename Iter, typename charType>
