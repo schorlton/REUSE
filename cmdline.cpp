@@ -8,21 +8,21 @@
 #include "common.h"
 #include "cmdline.h"
 
-parameters_common::parameters_common(){
+ParametersCommon::ParametersCommon(){
 	output_folder_name = NULL;
 	is_stdin =true;
 	threads = 8;
 	ram_limit=4000;
 }
 
-parameters_build::parameters_build(){
-	parameters_common();
+ParametersBuild::ParametersBuild(){
+	ParametersCommon();
 	seq_filename=NULL;
 	kmer_length=21;
 	mask = NULL;
 }
-parameters_filter::parameters_filter(){
-	parameters_common();
+ParametersFilter::ParametersFilter(){
+	ParametersCommon();
 	seq_filename_1=NULL;
 	seq_filename_2=NULL;
 	index_filename=NULL;
@@ -44,7 +44,7 @@ CompressType parse_compress_type(char *text){
 	}
 
 }
-int parse_command_line_build( int argc, char** argv, parameters_build& params)
+int parse_command_line_build( int argc, char** argv, ParametersBuild& params)
 {
 	static struct option long_options[] = 
 	{
@@ -113,7 +113,7 @@ int parse_command_line_build( int argc, char** argv, parameters_build& params)
 	}
 }
 
-int parse_command_line_filter( int argc, char** argv, parameters_filter& params)
+int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 {
 	static struct option long_options[] =
 			{
