@@ -13,7 +13,7 @@ using namespace seqan;
 
 int reuse_build(int argc, char **argv){
     
-    CharString seqFileName = "chrT.fa";
+    CharString seqFileName = "data/chrT.fa";
 
     SeqFileIn seqfile;
 
@@ -77,4 +77,5 @@ int main( int argc, char **argv) {
     }else{
 //Print help for reuse funcs
     }
+    return 0;
 }
