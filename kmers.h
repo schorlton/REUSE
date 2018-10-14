@@ -3,27 +3,29 @@
 #include <iterator>
 #include <seqan/sequence.h>
 
-template <typename T, typename E>
-KMerIterator<T,E> get_begin(T str, int k){
-    KMerIterator<T,E> iter(str,k);
+
+using encode_type = unsigned long int;
+
+
+template <typename T>
+class KMerIterator;
+
+
+template <typename T>
+KMerIterator<T> get_begin(T *str, int k){
+    KMerIterator<T> iter(str,k);
     return iter;
 }
 
-template <typename T, typename E>
-KMerIterator<T,E> get_end(T str, int k){
-    KMerIterator<T,E> iter(str,k);
-    iter+=length(str)-k;
+template <typename T>
+KMerIterator<T> get_end(T *str, int length, int k){
+    KMerIterator<T> iter(str,k);
+    iter+=length-k;
 }
 
-
-
-
-template <typename T, typename E>
-class KMerIterator;
-
-template <typename T, typename E>
-E kmer_encode(KMerIterator<T,E> start, KMerIterator<T,E> end){
-    E encoding = 0;
+template <typename T>
+encode_type kmer_encode(KMerIterator<T> start, KMerIterator<T> end){
+    encode_type encoding = 0;
 
 
     for(;start!=end;start++){
@@ -35,7 +37,7 @@ E kmer_encode(KMerIterator<T,E> start, KMerIterator<T,E> end){
     return encoding;
 }
 
-template <typename T, typename E>
+template <typename T>
 class KMerIterator{
     public:
         KMerIterator(const T *str, int k){
@@ -51,19 +53,24 @@ class KMerIterator{
             ptr+=val; 
             return i;
         }
+        
+        KMerIterator operator++(){ 
+            ptr += 1; 
+            return ptr;
+        }
         KMerIterator operator++(int val){ 
             KMerIterator i = *this; 
             val = 1;
             ptr += val; 
             return i;
         }
-        E operator*(){
+        encode_type operator*(){
             KMerIterator i = *this;
-            return kmer_encode<T,E>(i,i+k);
+            return kmer_encode<T>(i,i+k);
 
         }
         
-        E operator|(E val){
+        encode_type operator|(encode_type val){
             return ordValue(*ptr) | val;
         }
         

@@ -4,6 +4,12 @@
 #include "cmdline.h"
 #include "BBHashKmerContainer.h"
 
+#include <seqan/seq_io.h>
+
+
+using namespace seqan;
+
+
 
 int reuse_build(int argc, char **argv){
     
@@ -21,18 +27,18 @@ int reuse_build(int argc, char **argv){
     StringSet<Dna5String> seqs;
 
     try{
-        readRecords(ids,seqs,seqFile);
+        readRecords(ids,seqs,seqfile);
     }catch(Exception const & e){
         std::cerr << "ERROR" << e.what() << std::endl;
         return 1;
     }
 
-    BBHashKmerContainer table(1,1,150);
+    BBHashKmerContainer<KMerIterator<Dna5>,Dna5String> table(1,1,150);
 
     for(unsigned i = 0; i < length(ids) ; ++i){
 
-        KMerIterator<Dna5,unsigned long int> _begin = get_begin(toCString(seqs[i]),21);
-        KMerIterator<Dna5,unsigned long int> _end = get_end(toCString(seqs[i]),21);
+        KMerIterator<Dna5> _begin = get_begin(toCString(seqs[i]),21);
+        KMerIterator<Dna5> _end = get_end(toCString(seqs[i]),length(seqs[i]),21);
         table.addRange(_begin,_end);
     }
 

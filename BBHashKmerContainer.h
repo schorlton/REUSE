@@ -75,7 +75,7 @@ void BBHashKmerContainer<Iter, strType>::addRange(Iter& start, Iter& end) {
 
 	// mphf takes as input a c++ range. A simple array of keys can be wrapped with boomphf::range
 	// but could be from a user defined iterator (enabling keys to be read from a file or from some complex non-contiguous structure)
-	auto data_iterator = boomphf::range(start, end);
+	auto data_iterator = boomphf::range(&start, &end);
 
 	//build the mphf
 	bphf = new boomphf::mphf<u_int64_t,hasher_t>(numElements, data_iterator, numThreads, gammaFactor);
