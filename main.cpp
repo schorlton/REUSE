@@ -24,18 +24,19 @@ using namespace seqan;
 void filter(Queue&, Queue&) {}
 
 /*Program to output the */
-void output(Queue &q, char **argv){
+void output(Queue &queue, char **argv){
 
 	seqan::CharString seqFileName = "data/chrY-output.fa"; //TODO: replace with argument
 	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
 
 	// while the boolean is 1 and the Queue is non-empty
-	while(!done){
-		if(!q.empty()){
-			seqan::writeRecord(seqFileOut, q.front().id, q.front().seq); //TODO: add call for fastq sequences
-			q.pop(); // remove the front entry from the dequeue
+	Queue::ItemPointer item;
+	do {
+	    item = queue.pop();
+		if(item != nullptr) {
+			seqan::writeRecord(seqFileOut, item->id, item->seq); //TODO: add call for fastq sequences
 		}
-	}
+	} while(item != nullptr);
 
 	return;
 }
