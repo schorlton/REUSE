@@ -150,7 +150,7 @@ int reuse_build(int argc, char **argv){
     } catch (Exception const & e){
         std::cerr << "FILE ERROR" << e.what() << std::endl;
     }
-    table.save(p_build.output_filename);
+    table.save_index(params.output_filename);
  
 
     return 0;
