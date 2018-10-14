@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 project(REUSE)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_PREFIX_PATH "lib/seqan/util/cmake")
-set(SEQAN_INCLUDE_PATH "lib/seqan/include")
-
 
 INCLUDE_DIRECTORIES(lib)
 
