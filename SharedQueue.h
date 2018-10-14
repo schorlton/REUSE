@@ -7,6 +7,7 @@
 #define REUSE_SHAREDQUEUE_H
 
 #include <queue>
+#include <experimental/optional>
 #include <mutex>
 #include <condition_variable>
 
@@ -17,15 +18,12 @@ class SharedQueue
         SharedQueue();
         ~SharedQueue();
 
-        T& front();
-        void pop();
+        T& pop(bool& predicate);
 
         void push(const T &item);
         void push(T &&item);
 
         unsigned int size(bool blocking = true);
-
-        bool empty();
 
     private:
         std::deque<T> queue_;

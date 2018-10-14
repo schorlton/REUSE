@@ -1,6 +1,7 @@
 //
 // Created by Nolan Woods on 10/13/2018.
 //
+#include "SharedQueue.h"
 
 template <typename T>
 SharedQueue<T>::SharedQueue() = default;
@@ -9,25 +10,16 @@ template <typename T>
 SharedQueue<T>::~SharedQueue() = default;
 
 template <typename T>
-T& SharedQueue<T>::front()
+T& SharedQueue<T>::pop(bool& predicate)
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     while (queue_.empty())
     {
         cond_.wait(mlock);
     }
-    return queue_.front();
-}
-
-template <typename T>
-void SharedQueue<T>::pop()
-{
-    std::unique_lock<std::mutex> mlock(mutex_);
-    while (queue_.empty())
-    {
-        cond_.wait(mlock);
-    }
+    T& item = queue_.front();
     queue_.pop_front();
+    return item;
 }
 
 template <typename T>
