@@ -16,6 +16,10 @@ public:
     virtual void add(charType *, int length) = 0; //TODO change to seqan type
 
     virtual void addRange(Iter&, Iter&) = 0;
+
+    virtual void load_index(char* file) = 0;
+    virtual void save_index(char* file) = 0;
+
 };
 
 #endif //REUSE_ABSTRACTKMERCONTAINER_H
