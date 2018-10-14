@@ -15,21 +15,22 @@
 typedef boomphf::SingleHashFunctor<u_int64_t>  hasher_t;
 typedef boomphf::mphf<  u_int64_t, hasher_t  > boophf_t;
 
-template <typename Iter, typename strType>
-class BBHashKmerContainer: public AbstractKmerContainer<Iter, strType> {
+template <typename Iter, typename charType>
+class BBHashKmerContainer: public AbstractKmerContainer<Iter, charType> {
 	public:
 		// default constructor
 	    BBHashKmerContainer();   
         ~BBHashKmerContainer();
 	    // variable constructor
-	    BBHashKmerContainer(int numThreads, double gammaFactor, int numElements);
+	    BBHashKmerContainer(int numThreads, double gammaFactor, int numElements, int k);
 
-	    bool contains(strType&); //TODO change to seqan type
-	    void add(strType&); //TODO change to seqan type
+	    bool contains(charType* s); //TODO change to seqan type
+	    void add(charType* s, int length); //TODO change to seqan type
 
 	    void addRange(Iter& start, Iter& end);
 
 	private:
+		int kmers_size;
 		boophf_t * bphf;
 		int numThreads;
 		double gammaFactor;
@@ -37,40 +38,46 @@ class BBHashKmerContainer: public AbstractKmerContainer<Iter, strType> {
 };
 
 
-template <typename Iter, typename strType>
-BBHashKmerContainer<Iter, strType>::~BBHashKmerContainer(){
+template <typename Iter, typename charType>
+BBHashKmerContainer<Iter, charType>::~BBHashKmerContainer(){
     delete bphf;
 }
 
-template <typename Iter, typename strType>
-BBHashKmerContainer<Iter, strType>::BBHashKmerContainer() {
+template <typename Iter, typename charType>
+BBHashKmerContainer<Iter, charType>::BBHashKmerContainer() {
 	BBHashKmerContainer(1, 1.0, 1);
 }
 
-template <typename Iter, typename strType>
-BBHashKmerContainer<Iter, strType>::BBHashKmerContainer(int numThreads, double gammaFactor, int numElements) {
+template <typename Iter, typename charType>
+BBHashKmerContainer<Iter, charType>::BBHashKmerContainer(int numThreads, double gammaFactor, int numElements, int k) {
 	this->numThreads = numThreads;
 	this->gammaFactor = gammaFactor;
 	this->numElements = numElements;
+	kmers_size = k;
 
 	bphf = nullptr;
 }
 
-template <typename Iter, typename strType>
-bool BBHashKmerContainer<Iter, strType>::contains(strType&) {
-//TODO change to seqan type
-	return true;
+template <typename Iter, typename charType>
+bool BBHashKmerContainer<Iter, charType>::contains(charType* s) {
+	//TODO change to seqan type
+    KMerIterator<Dna5> iter((toCString(s), kmers_size));
+	// kmer_encode(iter, iter+kmers_size);
+	//query mphf like this
+	uint64_t idx = bphf->lookup(kmer_encode(iter, iter+kmers_size));
+	// printf(" example query  %lli ----->  %llu \n",data[0],idx);
+
+	return idx != static_cast<uint64_t>(-1)
 }
 
-template <typename Iter, typename strType>
-void BBHashKmerContainer<Iter, strType>::add(strType&) {
-	
-//TODO change to seqan type
+template <typename Iter, typename charType>
+void BBHashKmerContainer<Iter, charType>::add(charType* s, int length) {
+	//TODO change to seqan type
 } 
 
 
-template <typename Iter, typename strType>
-void BBHashKmerContainer<Iter, strType>::addRange(Iter& start, Iter& end) {
+template <typename Iter, typename charType>
+void BBHashKmerContainer<Iter, charType>::addRange(Iter& start, Iter& end) {
 
 	double t_begin,t_end; struct timeval timet;
 	
@@ -92,9 +99,6 @@ void BBHashKmerContainer<Iter, strType>::addRange(Iter& start, Iter& end) {
 	printf("BooPHF constructed perfect hash for %llu keys in %.2fs\n", numElements, elapsed);
 	printf("boophf  bits/elem : %f\n",(float) (bphf->totalBitSize())/numElements);
 	
-	//query mphf like this
-	// uint64_t  idx = bphf->lookup(data[0]);
-	// printf(" example query  %lli ----->  %llu \n",data[0],idx);
 
 	// free(data);
 
