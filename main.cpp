@@ -30,12 +30,12 @@ void output(Queue &q, char **argv){
 	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
 
 	// while the boolean is 1 and the Queue is non-empty
-	/*while(!done){
+	while(!done){
 		if(!q.empty()){
 			seqan::writeRecord(seqFileOut, q.front().id, q.front().seq); //TODO: add call for fastq sequences
 			q.pop(); // remove the front entry from the dequeue
 		}
-	}*/
+	}
 
 	return;
 }
@@ -82,11 +82,11 @@ int reuse_build(int argc, char **argv){
 
 int reuse_filter(int argc, char **argv){
     std::cout << "Filtering sequence......"<< std::endl;
-    ParametersFilter p_filter;
-    parse_command_line_filter( argc, argv, p_filter);
-    std::cout << "number of thread "<<p_filter.threads<< std::endl;
-    std::cout <<"input " << p_filter.seq_filename_1<< std::endl;
-    std::cout <<"paired? " << p_filter.paired<< std::endl;
+    ParametersFilter params;
+    parse_command_line_filter( argc, argv, params);
+    std::cout << "number of thread "<<params.threads<< std::endl;
+    std::cout <<"input " << params.seq_filename_1<< std::endl;
+    std::cout <<"paired? " << params.paired<< std::endl;
     //TODO replace with input parameters
     unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
     unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
