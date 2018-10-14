@@ -1,7 +1,7 @@
 # REUSE
 Rapid Elimination of Useless SEquences
 
-REUSE is a k-mer based tool for filtration of reads in sequencing datasets that do not match a reference sequence.
+REUSE is a k-mer based tool for filtration of reads in sequencing datasets that match a reference sequence.
 `reuse build` takes a reference fasta file as input, and ouputs a hashed index file. `reuse filter` takes FASTA/FASTQ file inputs, along with the hashed index file, and outputs k-mer filtered reads in a user-specified format. Common applications of REUSE include filtration of host, contamination, PhiX or ribosomal sequences.
 
 
