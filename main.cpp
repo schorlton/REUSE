@@ -4,8 +4,6 @@
 #include <cstring>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
-#include <fastaRecord.h>
-#include <fastqRecord.h>
 
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
@@ -31,12 +29,12 @@ void output(bool &done, Queue &q, char **argv){
 	seqan::SeqFileOut seqFileOut(toCString(seqFileName));
 
 	// while the boolean is 1 and the Queue is non-empty
-	while(!done){
+	/*while(!done){
 		if(!q.empty()){
 			seqan::writeRecord(seqFileOut, q.front().id, q.front().seq); //TODO: add call for fastq sequences
 			q.pop(); // remove the front entry from the dequeue
 		}
-	}
+	}*/
 
 	return;
 }
