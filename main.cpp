@@ -47,13 +47,13 @@ int reuse_filter(int argc, char **argv){
     //Parse and validate parameters
 
 
-  //Init thread pool
-  Queue pending_records, output_records;
-  bool done = false;
-  std::vector<std::thread> thread_pool;
-  auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(done), std::ref(pending_records), std::ref(output_records));
-  increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
-  thread_pool.emplace(thread_pool.end(), output, std::ref(done), std::ref(output_records));
+    //Init thread pool
+    Queue pending_records, output_records;
+    bool done = false;
+    std::vector<std::thread> thread_pool;
+    auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records));
+    increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
+    thread_pool.emplace(thread_pool.end(), output, std::ref(output_records));
 
 	//Read in records to queue
 	seqan::CharString id;
@@ -93,9 +93,11 @@ int reuse_filter(int argc, char **argv){
             while (pending_records.size(false) > queue_limit);
         }
     }
-
+    
     //Join thread pool
-    done = true; //Signal threads to exit
+    //Signal threads to exit
+    pending_records.signal_done();
+    output_records.signal_done();
     for (auto& thread : thread_pool) thread.join();
 
     //Output statistics
