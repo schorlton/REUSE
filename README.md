@@ -21,7 +21,7 @@ REUSE will run on most unix-based systems including Linux and Mac OS. Prerequisi
 - cmake (≥3.5)
 
 ## Installation
-Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest, extract and then run the `reuse` binay:
+Download the pre-compiled binary from https://github.com/chorltsd/REUSE/releases/latest, extract and then run the `reuse` binary:
 
 `wget https://github.com/chorltsd/REUSE/releases/latest/reuse_linux-x64.tar.gz`
 
@@ -41,11 +41,11 @@ Alternatively, this repository can be cloned and compiled using cmake:
 `cmake .`
 
 ### Usage:
-`reuse build [options] -o \<output_file\>`
+`reuse build [options] -o <output_file>`
 
 
 ### Options:
--i \<input_file\> = reference in.  A comma-separated list of FASTA files containing the reference sequences to index.  (default: read from STDIN)
+-i \<input_file\> = reference in.  A comma-separated list of FASTA files containing the reference sequences to index  (default: read from STDIN)
 
 -o \<output_file\>= File to save index k-mer dataset to disk
 
@@ -69,7 +69,7 @@ Alternatively, this repository can be cloned and compiled using cmake:
 -Eliminate all reads or read pairs when 1 or more reference k-mers are found within the read. Optionally, retain only those reads with matching k-mers.
 
 ### Usage:
-`reuse filter [options] -x \<index\> -1 \<m1\> -2 \<m2\>`
+`reuse filter [options] -x <index> -1 <m1> -2 <m2>`
 
  ### Main arguments
 -x \<index\>
