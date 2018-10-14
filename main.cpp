@@ -104,12 +104,12 @@ int filter_test(int refTableLength){
 int reuse_build(int argc, char **argv){
 
     std::cerr << "Building reference......"<< std::endl;
-    ParametersBuild p_build;
-    if( 0!= parse_command_line_build( argc, argv, p_build)){
+    ParametersBuild params;
+    if( 0!= parse_command_line_build( argc, argv, params)){
         return -1;
     }
-    std::cout << "number of thread "<<p_build.threads<< std::endl;
-//    std::cout <<"input " << p_build.seq_filename<< std::endl;
+    std::cout << "number of thread "<<params.threads<< std::endl;
+//    std::cout <<"input " << params.seq_filename<< std::endl;
 
     CharString seqFileName = "data/chrT.fa";
 
