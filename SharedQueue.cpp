@@ -11,25 +11,32 @@ template <typename T>
 SharedQueue<T>::~SharedQueue() = default;
 
 template <typename T>
-typename SharedQueue<T>::ItemPointer SharedQueue<T>::pop()
+T SharedQueue<T>::pop()
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     while (queue_.empty())
     {
+        if (done) throw Stop();
         cond_.wait(mlock, [this]{return done;});
-        if (done) {
-            SharedQueue<T>::ItemPointer none;
-            return none;
-        }
     }
-    ItemPointer item = std::move(queue_.front());
+    T item = std::move(queue_.front());
     //std::swap(item, queue_.front());
     queue_.pop_front();
     return item;
 }
 
 template <typename T>
-void SharedQueue<T>::push(ItemPointer item)
+void SharedQueue<T>::push(const T &item)
+{
+    std::unique_lock<std::mutex> mlock(mutex_);
+    queue_.push_back(item);
+    mlock.unlock();     // unlock before notificiation to minimize mutex con
+    cond_.notify_one(); // notify one waiting thread
+
+}
+
+template <typename T>
+void SharedQueue<T>::push(T &&item)
 {
     std::unique_lock<std::mutex> mlock(mutex_);
     queue_.push_back(std::move(item));

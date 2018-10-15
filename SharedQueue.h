@@ -9,18 +9,22 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <exception>
+
+class Stop : std::exception {};
+
 
 template <typename T>
 class SharedQueue
 {
     public:
-        using ItemPointer = std::unique_ptr<T>;
         SharedQueue();
         ~SharedQueue();
 
-        ItemPointer pop();
+        T pop() throws Stop;
 
-        void push(ItemPointer item);
+        void push(const T& item);
+        void push(const T&& item);
 
         unsigned int size(bool blocking = true);
 
@@ -28,7 +32,7 @@ class SharedQueue
 
     private:
         bool done;
-        std::deque<ItemPointer> queue_;
+        std::deque<T> queue_;
         std::mutex mutex_;
         std::condition_variable cond_;
 };
