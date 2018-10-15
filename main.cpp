@@ -25,7 +25,7 @@ using namespace seqan;
 
 
 //Thread interface declaration
-void filter(Queue&, Queue&, AbstractKmerContainer& kmers) {}
+void filter(Queue&, Queue&, AbstractKmerContainer<KMerIterator<Dna5>,Dna5>& kmers) {}
 
 /*Program to output the */
 void output(Queue &queue, const ParametersFilter &params){
@@ -111,7 +111,7 @@ int reuse_build(int argc, char **argv){
     std::cout << "number of thread "<<params.threads<< std::endl;
 //    std::cout <<"input " << params.seq_filename<< std::endl;
 
-    CharString seqFileName = "data/chrT.fa";
+    CharString seqFileName = "data/mock.fa";
 
     SeqFileIn seqfile;
 
@@ -131,7 +131,7 @@ int reuse_build(int argc, char **argv){
         return 1;
     }
 
-    int refTableLength = length(seqs[0])/10-21;
+    int refTableLength = length(seqs[0])/2-21;
     BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,refTableLength,21);
 
     for(unsigned i = 0; i < length(ids) ; ++i){
@@ -156,12 +156,79 @@ int reuse_build(int argc, char **argv){
     return 0;
     // build hash table; binary encoding
 }
+int reuse_filter_singlecore(ParametersFilter &params){
+    //Parse and validate parameters
+    std::cerr << "Filtering sequence......"<< std::endl;
+    std::cerr << "Single Core Run" << std::endl;
+
+    std::cerr <<"paired? " << (params.paired?"true":"false")<< std::endl;
+    //TODO replace with input parameters
+
+
+
+    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,100,21); //TODO: properly instantiate and load from table file
+    table.load_index(params.index_filename);
+
+    //Read in records to queue
+    seqan::CharString id;
+    seqan::Dna5String seq;
+    seqan::CharString qual;
+
+    //Call sequence stream function of seqan to read from the file
+    seqan::SeqFileIn seqFileIn;
+    if (params.is_stdin)
+        seqan::open(seqFileIn, std::cin);
+    else
+        seqan::open(seqFileIn, params.seq_filename_1);
+
+    seqan::SeqFileOut seqFileOut;
+    if (params.is_stdout){
+        seqan::open(seqFileOut, std::cout);
+    }
+    else{
+        seqan::open(seqFileOut, params.output_filename);
+    }
+
+    //Push record into queue
+    while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
+        try {
+            // if(norc in args) TODO
+
+            readRecord(id, seq, qual, seqFileIn);
+            // else
+            // readRecord(id, seq, qual, seqFileIn);
+        } catch (std::exception const & e) {
+            std::cerr << "ERROR: " << e.what() << std::endl;
+            return 1;
+        }
+        bool flag = false;
+        Dna5 *seq_c = toCString(seq);
+        for(unsigned i = 0; i < length(seq)-params.kmer_length;i++){
+            if(table.contains(seq_c+i)){
+                flag = true;
+                break;
+            }
+            
+        }
+        if(!flag){
+            writeRecord(seqFileOut,id,seq,qual);
+        }    
+    }
+
+
+
+    return 0;
+}
 
 int reuse_filter(int argc, char **argv){
     //Parse and validate parameters
     std::cerr << "Filtering sequence......"<< std::endl;
     ParametersFilter params;
     parse_command_line_filter( argc, argv, params);
+    if(params.threads == 1){
+        reuse_filter_singlecore(params);
+        return 0;
+    }
     std::cerr << "number of thread "<<params.threads<< std::endl;
     std::cerr <<"input " << params.seq_filename_1<< std::endl;
     std::cerr <<"paired? " << params.paired<< std::endl;

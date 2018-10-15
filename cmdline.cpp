@@ -9,6 +9,8 @@
 #include "cmdline.h"
 
 ParametersCommon::ParametersCommon(){
+
+	kmer_length=21;
 	output_filename = NULL;
 	is_stdin =true;
 	threads = 1;
@@ -16,9 +18,11 @@ ParametersCommon::ParametersCommon(){
 }
 
 ParametersBuild::ParametersBuild(){
-	ParametersCommon();
+	
+
+    ParametersCommon();
 	seq_filename=NULL;
-	kmer_length=21;
+
 	mask = NULL;
 }
 ParametersFilter::ParametersFilter(){
@@ -119,7 +123,8 @@ int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 					{"out"    				, required_argument, 0, 'o'},
 					{"threads"				, required_argument, 0, 'p'},
 					{"ram_limit"			, required_argument, 0, 'r'},
-					{"min_k-mer_len"        , required_argument, 0, 'k'},
+					{"kmer_len"        , required_argument, 0, 'k'},
+					{"min_filter_k"        , required_argument, 0, 'm'},
 					{"compress"				, required_argument, 0, 'g'},
 					{"help"   				, no_argument,       0, 'h'},
 					{"version"				, no_argument,       0, 'v'},
@@ -134,7 +139,7 @@ int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 	}
 	int o;
 	int index;
-	while( ( o = getopt_long( argc, argv, "x:1:2:o:p:r:k:ghvl:", long_options, &index)) != -1)
+	while( ( o = getopt_long( argc, argv, "x:m:1:2:o:p:r:k:ghvl:", long_options, &index)) != -1)
 	{
 		switch( o)
 		{
@@ -159,7 +164,11 @@ int parse_command_line_filter( int argc, char** argv, ParametersFilter& params)
 			case 'r':
 				params.ram_limit = atoi(optarg);
 				break;
+			
 			case 'k':
+				params.kmer_length = atoi(optarg);
+				break;
+            case 'm':
 				params.min_kmer_threshhold = atoi(optarg);
 				break;
 			case 'g':
@@ -218,7 +227,10 @@ void print_help(){
 	std::cerr << "              -r = Maximum RAM usage (default: all available RAM)" << std::endl;
 	std::cerr << "              -p/--threads = Threads to use (default: available number of threads)"<< std::endl;
 	std::cerr << "              -l = Log file"<< std::endl;
-	std::cerr << "              -k = Minimum number of k-mers per read to filter it (default: 1)"<< std::endl;
+
+	std::cerr << "              -k = k-mer length (default: 21)"<< std::endl;
+
+	std::cerr << "              -m = Minimum number of k-mers per read to filter it (default: 1)"<< std::endl;
 
 
 

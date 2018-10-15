@@ -44,7 +44,7 @@ private:
 
 
 template <typename Iter, typename charType>
-void BBHashKmerContainer<Iter,charType>::load(char *fname){
+void BBHashKmerContainer<Iter,charType>::load_index(char *fname){
 
 
     std::ifstream ifn(fname);
@@ -52,7 +52,7 @@ void BBHashKmerContainer<Iter,charType>::load(char *fname){
     bphf->load(ifn);
 }
 template <typename Iter, typename charType>
-void BBHashKmerContainer<Iter,charType>::save(char *fname){
+void BBHashKmerContainer<Iter,charType>::save_index(char *fname){
 
     std::ofstream out(fname);
 
@@ -121,16 +121,6 @@ void BBHashKmerContainer<Iter, charType>::addRange(Iter& start, Iter& end) {
 	
 
 	// free(data);
-
-}
-
-template<typename Iter, typename charType>
-void BBHashKmerContainer<Iter, charType>::load_index(char *file) {
-
-}
-
-template<typename Iter, typename charType>
-void BBHashKmerContainer<Iter, charType>::save_index(char *file) {
 
 }
 
