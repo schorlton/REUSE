@@ -21,10 +21,10 @@ class SharedQueue
         SharedQueue();
         ~SharedQueue();
 
-        T pop() throws Stop;
+        T pop();
 
         void push(const T& item);
-        void push(const T&& item);
+        void push(T&& item);
 
         unsigned int size(bool blocking = true);
 

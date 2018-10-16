@@ -37,15 +37,14 @@ void output(Queue &queue, const ParametersFilter &params){
 	    seqan::open(seqFileOut, params.output_filename);
 
 	// while the boolean is 1 and the Queue is non-empty
-	Queue::ItemPointer item;
-	do {
-	    item = queue.pop();
-		if(item != nullptr) {
-			seqan::writeRecord(seqFileOut, item->id, item->seq); //TODO: add call for fastq sequences
-		}
-	} while(item != nullptr);
+	try {
+        do {
+            auto item = queue.pop();
+            seqan::writeRecord(seqFileOut, item.id, item.seq); //TODO: add call for fastq sequences
+        } while (true);
+    } catch (Stop& e) {
 
-	return;
+	}
 }
 
 
@@ -204,7 +203,7 @@ int reuse_filter(int argc, char **argv){
         }
 
         //construct a fasta/fastq object
-        Queue::ItemPointer fa = std::make_unique<FastaRecord>(id, seq);
+        FastaRecord fa(id, seq);
 
         //push to the pending queue
         pending_records.push(std::move(fa));
