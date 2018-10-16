@@ -44,6 +44,21 @@ private:
 
 
 template <typename Iter, typename charType>
+void BBHashKmerContainer<Iter,charType>::load(char *fname){
+
+
+    std::ifstream ifn(fname);
+
+    bphf->load(ifn);
+}
+template <typename Iter, typename charType>
+void BBHashKmerContainer<Iter,charType>::save(char *fname){
+
+    std::ofstream out(fname);
+
+    bphf->save(out);
+}
+template <typename Iter, typename charType>
 BBHashKmerContainer<Iter, charType>::~BBHashKmerContainer(){
     delete bphf;
 }
@@ -106,16 +121,6 @@ void BBHashKmerContainer<Iter, charType>::addRange(Iter& start, Iter& end) {
 	
 
 	// free(data);
-
-}
-
-template<typename Iter, typename charType>
-void BBHashKmerContainer<Iter, charType>::load(char *file) {
-
-}
-
-template<typename Iter, typename charType>
-void BBHashKmerContainer<Iter, charType>::save(char *file) {
 
 }
 

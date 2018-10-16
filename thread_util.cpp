@@ -39,7 +39,7 @@ void increment_priority(std::thread& thread, int amount) {
     int max = sched_get_priority_max(policy);
     int min = sched_get_priority_min(policy);
     if (max <= sch_params.sched_priority && min >= sch_params.sched_priority) {
-        std::cerr << "Thread priority of " << sch_params.sched_priority << " out of range: " << min << " to " max << std::endl;
+        std::cerr << "Thread priority of " << sch_params.sched_priority << " out of range: " << min << " to " << max << std::endl;
         return;
     }
     if(errno = pthread_setschedparam(thread.native_handle(), policy, &sch_params)) {

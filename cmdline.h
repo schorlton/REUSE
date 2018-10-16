@@ -9,6 +9,7 @@ using string_param = char*;
 
 struct ParametersCommon{
 
+	int kmer_length;
 	string_param output_filename;
 	int threads;
 	long ram_limit;
@@ -19,7 +20,7 @@ struct ParametersCommon{
 struct ParametersBuild:ParametersCommon{
 	string_param seq_filename;
 	CompressType zip;
-	int kmer_length;
+
 	string_param mask;
 
 	ParametersBuild();
