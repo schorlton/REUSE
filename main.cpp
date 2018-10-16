@@ -32,7 +32,7 @@ void filter(Queue& pending_records, Queue& output_records, KmerContainer& table,
             for(unsigned i = 0; i < length(item.seq)-params.kmer_length;i++) {
                 if(table.contains(seq_c+i)) goto SKIP_OUTPUT;
             }
-            output_records.push(item);
+            output_records.push(std::move(item));
             SKIP_OUTPUT: continue;
         } while (true);
     } catch (Stop& e) {
