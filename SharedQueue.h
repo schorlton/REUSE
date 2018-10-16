@@ -26,7 +26,7 @@ class SharedQueue
         void push(const T& item);
         void push(T&& item);
 
-        unsigned int size(bool blocking = true);
+        unsigned long size(bool blocking = true);
 
         void signal_done();
 

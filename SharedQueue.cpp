@@ -51,11 +51,11 @@ void SharedQueue<T>::signal_done() {
 }
 
 template <typename T>
-unsigned int SharedQueue<T>::size(bool blocking)
+unsigned long SharedQueue<T>::size(bool blocking)
 {
     if (blocking) {
         std::unique_lock<std::mutex> mlock(mutex_);
-        int size = queue_.size();
+        unsigned long size = queue_.size();
         mlock.unlock();
         return size;
     } else {
