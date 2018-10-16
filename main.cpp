@@ -24,7 +24,21 @@ using KmerContainer = BBHashKmerContainer<KMerIterator<Dna5>,Dna5>;
 
 
 //Thread interface declaration
-void filter(Queue&, Queue&, KmerContainer& kmers) {}
+void filter(Queue& pending_records, Queue& output_records, KmerContainer& table, const ParametersFilter &params) {
+    try {
+        do {
+            auto item = pending_records.pop();
+            Dna5 *seq_c = toCString(item.seq);
+            for(unsigned i = 0; i < length(item.seq)-params.kmer_length;i++) {
+                if(table.contains(seq_c+i)) goto SKIP_OUTPUT;
+            }
+            output_records.push(item);
+            SKIP_OUTPUT: continue;
+        } while (true);
+    } catch (Stop& e) {
+
+    }
+}
 
 /*Program to output the */
 void output(Queue &queue, const ParametersFilter &params){
@@ -239,9 +253,9 @@ int reuse_filter(int argc, char **argv){
     //Init thread pool
     Queue pending_records, output_records;
     std::vector<std::thread> thread_pool;
-    auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table));
+    auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table), std::ref(params));
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
-    thread_pool.emplace(thread_pool.end(), output, std::ref(output_records), params); //Pass params
+    std::thread output_thread(output, std::ref(output_records), std::ref(params));
 
     //Read in records to queue
     seqan::CharString id;
@@ -278,7 +292,7 @@ int reuse_filter(int argc, char **argv){
         if (pending_records.size() > queue_limit) {
             if (thread_pool.size() < max_threads)
                 //Increase thread pool by 1
-                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table));
+                t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table), std::ref(params));
             increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
 
             //Wait for pending records to desaturate (Non-blocking size check)
@@ -289,8 +303,9 @@ int reuse_filter(int argc, char **argv){
     //Join thread pool
     //Signal threads to exit
     pending_records.signal_done();
-    output_records.signal_done();
     for (auto& thread : thread_pool) thread.join();
+    output_records.signal_done();
+    output_thread.join();
 
     //Output statistics
 
