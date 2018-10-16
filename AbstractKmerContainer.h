@@ -12,13 +12,13 @@ public:
 
     AbstractKmerContainer() {};
     virtual ~AbstractKmerContainer() {};
-    virtual bool contains(charType *) = 0; //TODO change to seqan type
-    virtual void add(charType *, int length) = 0; //TODO change to seqan type
+    virtual bool contains(charType *) = 0;
+    virtual void add(charType *, int length) = 0;
 
     virtual void addRange(Iter&, Iter&) = 0;
 
-    virtual void load_index(char* file) = 0;
-    virtual void save_index(char* file) = 0;
+    virtual void load(char* file) = 0;
+    virtual void save(char* file) = 0;
 
 };
 

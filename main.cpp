@@ -9,7 +9,6 @@
 
 #include <fstream>
 
-#include "AbstractKmerContainer.h"
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
 #include "thread_util.h"
@@ -17,15 +16,15 @@
 #include "SharedQueue.h"
 
 
+using namespace seqan;
+
 using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
-
-
-using namespace seqan;
+using KmerContainer = BBHashKmerContainer<KMerIterator<Dna5>,Dna5>;
 
 
 //Thread interface declaration
-void filter(Queue&, Queue&, AbstractKmerContainer& kmers) {}
+void filter(Queue&, Queue&, KmerContainer& kmers) {}
 
 /*Program to output the */
 void output(Queue &queue, const ParametersFilter &params){
@@ -70,7 +69,7 @@ int filter_test(int refTableLength){
         return 1;
     }
 
-    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,refTableLength,21);
+    KmerContainer table(1,2,refTableLength,21);
     try {
         std::ifstream inputFile("test_filter_table", std::ios::binary);
         while (inputFile.read((char *)&table,sizeof(table)));
@@ -149,7 +148,7 @@ int reuse_build(int argc, char **argv){
     } catch (Exception const & e){
         std::cerr << "FILE ERROR" << e.what() << std::endl;
     }
-    table.save_index(params.output_filename);
+    table.save(params.output_filename);
  
 
     return 0;

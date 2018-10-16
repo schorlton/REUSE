@@ -30,9 +30,9 @@ class BBHashKmerContainer: public AbstractKmerContainer<Iter, charType> {
 
 	    void addRange(Iter& start, Iter& end);
 
-	void load_index(char *file) override;
+		void load(char *file);
 
-	void save_index(char *file) override;
+		void save(char *file);
 
 private:
 		int kmers_size;
@@ -43,21 +43,6 @@ private:
 };
 
 
-template <typename Iter, typename charType>
-void BBHashKmerContainer<Iter,charType>::load(char *fname){
-
-
-    std::ifstream ifn(fname);
-
-    bphf->load(ifn);
-}
-template <typename Iter, typename charType>
-void BBHashKmerContainer<Iter,charType>::save(char *fname){
-
-    std::ofstream out(fname);
-
-    bphf->save(out);
-}
 template <typename Iter, typename charType>
 BBHashKmerContainer<Iter, charType>::~BBHashKmerContainer(){
     delete bphf;
@@ -125,12 +110,12 @@ void BBHashKmerContainer<Iter, charType>::addRange(Iter& start, Iter& end) {
 }
 
 template<typename Iter, typename charType>
-void BBHashKmerContainer<Iter, charType>::load_index(char *file) {
+void BBHashKmerContainer<Iter, charType>::load(char *file) {
 
 }
 
 template<typename Iter, typename charType>
-void BBHashKmerContainer<Iter, charType>::save_index(char *file) {
+void BBHashKmerContainer<Iter, charType>::save(char *file) {
 
 }
 
