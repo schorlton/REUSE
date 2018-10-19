@@ -41,7 +41,7 @@ void filter(Queue& pending_records, Queue& output_records, KmerContainer& table,
 }
 
 /*Program to output the */
-void output(Queue &queue, const ParametersFilter &params){
+void output(Queue &queue, const ParametersFilter &params, unsigned long& total_output){
 
 	seqan::SeqFileOut seqFileOut;
 	if (params.is_stdout)
@@ -49,11 +49,11 @@ void output(Queue &queue, const ParametersFilter &params){
 	else
 	    seqan::open(seqFileOut, params.output_filename);
 
-	// while the boolean is 1 and the Queue is non-empty
 	try {
         do {
             auto item = queue.pop();
             seqan::writeRecord(seqFileOut, item.id, item.seq); //TODO: add call for fastq sequences
+            ++total_output;
         } while (true);
     } catch (Stop& e) {
 
@@ -245,17 +245,17 @@ int reuse_filter(int argc, char **argv){
     std::cerr <<"input " << params.seq_filename_1<< std::endl;
     std::cerr <<"paired? " << params.paired<< std::endl;
     //TODO replace with input parameters
-    unsigned int max_threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1; //If return 0, set to 1
-    unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase
+    unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase, TODO replace with memory limit
+    unsigned long total_records = 0, total_output = 0;
 
-    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,100,21); //TODO: properly instantiate and load from table file
+    KmerContainer table(1,2,100,21); //TODO: properly instantiate and load from table file
 
     //Init thread pool
     Queue pending_records, output_records;
     std::vector<std::thread> thread_pool;
     auto t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table), std::ref(params));
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
-    std::thread output_thread(output, std::ref(output_records), std::ref(params));
+    std::thread output_thread(output, std::ref(output_records), std::ref(params), std::ref(total_output));
 
     //Read in records to queue
     seqan::CharString id;
@@ -264,10 +264,15 @@ int reuse_filter(int argc, char **argv){
 
     //Call sequence stream function of seqan to read from the file
     seqan::SeqFileIn seqFileIn;
-    if (params.is_stdin)
+    if (params.is_stdin) {
         seqan::open(seqFileIn, std::cin);
-    else
+    }
+    else {
         seqan::open(seqFileIn, params.seq_filename_1);
+    }
+
+    std::cerr << "Pending filter: " << std::setw(10) << 0 << " Pending output: " << std::setw(10) << 0 << " Total processed: " << std::setw(10) << 0 << " Total output: " << std::setw(10) << 0 << std::endl;
+
 
     //Push record into queue
     while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
@@ -290,7 +295,7 @@ int reuse_filter(int argc, char **argv){
 
         //Check queue size and increase thread pool to desaturate
         if (pending_records.size() > queue_limit) {
-            if (thread_pool.size() < max_threads)
+            if (thread_pool.size() < params.threads)
                 //Increase thread pool by 1
                 t = thread_pool.emplace(thread_pool.end(), filter, std::ref(pending_records), std::ref(output_records), std::ref(table), std::ref(params));
             increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
@@ -298,6 +303,10 @@ int reuse_filter(int argc, char **argv){
             //Wait for pending records to desaturate (Non-blocking size check)
             while (pending_records.size(false) > queue_limit);
         }
+        if (total_records % 100 == 0)
+            std::cerr << "\033[F\033[KPending filter: " << std::setw(10) << pending_records.size(false) << " Pending output: " << std::setw(10) << output_records.size(false) << " Total processed: " << std::setw(10) << total_records << " Total output: " << std::setw(10) << total_output << std::endl;
+
+        ++total_records;
     }
 
     //Join thread pool

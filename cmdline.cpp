@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <thread>
 
 #include "common.h"
 #include "cmdline.h"
@@ -13,7 +14,7 @@ ParametersCommon::ParametersCommon(){
 	kmer_length=21;
 	output_filename = NULL;
 	is_stdin =true;
-	threads = 1;
+	threads = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1;
 	ram_limit=4000;
 }
 
