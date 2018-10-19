@@ -17,7 +17,7 @@ T SharedQueue<T>::pop()
     while (queue_.empty())
     {
         if (done) throw Stop();
-        cond_.wait(mlock, [this]{return done;});
+        cond_.wait(mlock);
     }
     T item = std::move(queue_.front());
     //std::swap(item, queue_.front());
@@ -48,6 +48,7 @@ void SharedQueue<T>::push(T &&item)
 template <typename T>
 void SharedQueue<T>::signal_done() {
     this->done = true;
+    cond_.notify_all();
 }
 
 template <typename T>
