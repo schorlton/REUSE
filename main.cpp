@@ -22,6 +22,12 @@ using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 using KmerContainer = BBHashKmerContainer<KMerIterator<Dna5>,Dna5>;
 
+void print_status(unsigned long pending_records, unsigned long output_records, unsigned long total_records, unsigned long total_output) {
+    if (total_records)
+        //Delete previous output
+        std::cerr << "\033[F\033[K";
+    std::cerr << "Pending filter: " << std::setw(10) << pending_records << " Pending output: " << std::setw(10) << output_records << " Total processed: " << std::setw(10) << total_records << " Total output: " << std::setw(10) << total_output << std::endl;
+}
 
 //Thread interface declaration
 void filter(Queue& pending_records, Queue& output_records, KmerContainer& table, const ParametersFilter &params) {
@@ -271,8 +277,7 @@ int reuse_filter(int argc, char **argv){
         seqan::open(seqFileIn, params.seq_filename_1);
     }
 
-    std::cerr << "Pending filter: " << std::setw(10) << 0 << " Pending output: " << std::setw(10) << 0 << " Total processed: " << std::setw(10) << 0 << " Total output: " << std::setw(10) << 0 << std::endl;
-
+    print_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
     //Push record into queue
     while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
@@ -304,7 +309,7 @@ int reuse_filter(int argc, char **argv){
             while (pending_records.size(false) > queue_limit);
         }
         if (total_records % 100 == 0)
-            std::cerr << "\033[F\033[KPending filter: " << std::setw(10) << pending_records.size(false) << " Pending output: " << std::setw(10) << output_records.size(false) << " Total processed: " << std::setw(10) << total_records << " Total output: " << std::setw(10) << total_output << std::endl;
+            print_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
         ++total_records;
     }
@@ -316,7 +321,8 @@ int reuse_filter(int argc, char **argv){
     output_records.signal_done();
     output_thread.join();
 
-    //Output statistics
+    //Output final statistics
+    print_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
     return 0;
 }
