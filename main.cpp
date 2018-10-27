@@ -22,11 +22,19 @@ using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 using KmerContainer = BBHashKmerContainer<KMerIterator<Dna5>,Dna5>;
 
-void print_status(unsigned long pending_records, unsigned long output_records, unsigned long total_records, unsigned long total_output) {
+void print_filter_status(unsigned long pending_records, unsigned long output_records, unsigned long total_records,
+                         unsigned long total_output) {
     if (total_records)
         //Delete previous output
         std::cerr << "\033[F\033[K";
     std::cerr << "Pending filter: " << std::setw(10) << pending_records << " Pending output: " << std::setw(10) << output_records << " Total processed: " << std::setw(10) << total_records << " Total output: " << std::setw(10) << total_output << std::endl;
+}
+
+void print_build_status(unsigned long total_sequences, unsigned long total_kmers) {
+    if (total_sequences)
+        //Delete previous output
+        std::cerr << "\033[F\033[K";
+    std::cerr << " Total processed: " << std::setw(10) << total_sequences << " Total kmers: " << std::setw(10) << total_kmers << std::endl;
 }
 
 //Thread interface declaration
@@ -126,14 +134,12 @@ int reuse_build(int argc, char **argv){
     if( 0!= parse_command_line_build( argc, argv, params)){
         return -1;
     }
-    std::cout << "number of thread "<<params.threads<< std::endl;
+    std::cerr << "number of thread "<<params.threads<< std::endl;
 //    std::cout <<"input " << params.seq_filename<< std::endl;
-
-    CharString seqFileName = "data/mock.fa";
 
     SeqFileIn seqfile;
 
-    if( !open(seqfile, toCString(seqFileName))){
+    if( !open(seqfile, params.seq_filename)){
         std::cerr << "ERROR\n" << std::endl;
         return -1;
 
@@ -150,7 +156,7 @@ int reuse_build(int argc, char **argv){
     }
 
     int refTableLength = length(seqs[0])/2-21;
-    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,refTableLength,21);
+    KmerContainer table(1,2,refTableLength,21); //TODO replace hardcoded params
 
     for(unsigned i = 0; i < length(ids) ; ++i){
 
@@ -277,7 +283,7 @@ int reuse_filter(int argc, char **argv){
         seqan::open(seqFileIn, params.seq_filename_1);
     }
 
-    print_status(pending_records.size(false), output_records.size(false), total_records, total_output);
+    print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
     //Push record into queue
     while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
@@ -309,7 +315,7 @@ int reuse_filter(int argc, char **argv){
             while (pending_records.size(false) > queue_limit);
         }
         if (total_records % 100 == 0)
-            print_status(pending_records.size(false), output_records.size(false), total_records, total_output);
+            print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
         ++total_records;
     }
@@ -322,7 +328,7 @@ int reuse_filter(int argc, char **argv){
     output_thread.join();
 
     //Output final statistics
-    print_status(pending_records.size(false), output_records.size(false), total_records, total_output);
+    print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
     return 0;
 }
