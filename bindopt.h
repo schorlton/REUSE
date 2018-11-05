@@ -92,7 +92,7 @@ namespace bindopt {
 
     protected:
         std::string extract(const std::string &str1, const std::string &str2, unsigned short& consumed) {
-            unsigned int start{0};
+            unsigned long start{0};
             if (name.empty()) {
                 consumed = 1;
                 return str1;
