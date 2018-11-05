@@ -1,46 +1,50 @@
 #ifndef __COMMANDLINE
 #define __COMMANDLINE
 
+#include <vector>
+#include <string>
+
 #include "common.h"
 
-enum class CompressType { gzip, bzip2, uncompressed,err};
+enum class CompressType { gzip, bzip2, uncompressed };
+CompressType operator<<(CompressType& val, const std::string& str);
 
-using string_param = char*;
+#include "bindopt.h"
 
-struct ParametersCommon{
+struct ParametersCommon {
+    std::string seq_filename;
+    std::string output_filename;
+    std::string log_filename;
+    CompressType zip;
+    unsigned int kmer_length;
+    unsigned int threads;
+    unsigned long ram_limit;
+    bool verbose;
+    bool help;
 
-	int kmer_length;
-	string_param output_filename;
-	int threads;
-	long ram_limit;
-	bool is_stdin;
-	ParametersCommon();
+    ParametersCommon();
+    ParametersCommon(bindopt::Options &options);
+    void get_options(bindopt::Options &options);
 };
 
-struct ParametersBuild:ParametersCommon{
-	string_param seq_filename;
-	CompressType zip;
-
-	string_param mask;
+struct ParametersBuild : ParametersCommon {
+    std::string mask;
 
 	ParametersBuild();
-
+	ParametersBuild(bindopt::Options &options);
+	void get_options(bindopt::Options &options);
 };
-struct ParametersFilter:ParametersCommon{
-	string_param log_filename;
-	string_param seq_filename_1;
-	string_param seq_filename_2;
-	string_param index_filename;
-	CompressType zip;
-	bool paired;
-	bool is_stdout;
-	int min_kmer_threshhold;
+
+struct ParametersFilter : ParametersCommon {
+    std::string seq_mate_filename;
+    std::string index_filename;
+	unsigned int min_kmer_threshhold;
 
 	ParametersFilter();
+	ParametersFilter(bindopt::Options &options);
+	void get_options(bindopt::Options &options);
 };
-int parse_command_line_common(int, char**, ParametersCommon&);
-int parse_command_line_build( int, char**, ParametersBuild&);
-int parse_command_line_filter( int, char**, ParametersFilter&);
+
 void print_help( void);
 
 #endif

@@ -17,8 +17,8 @@ public:
 
     virtual void addRange(Iter&, Iter&) = 0;
 
-    virtual void load(char* file) = 0;
-    virtual void save(char* file) = 0;
+    virtual void load(const char* file) = 0;
+    virtual void save(const char* file) = 0;
 
 };
 

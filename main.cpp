@@ -58,10 +58,10 @@ void filter(Queue& pending_records, Queue& output_records, KmerContainer& table,
 void output(Queue &queue, const ParametersFilter &params, unsigned long& total_output){
 
 	seqan::SeqFileOut seqFileOut;
-	if (params.is_stdout)
+	if (params.output_filename == "-")
 	    seqan::open(seqFileOut, std::cout);
 	else
-	    seqan::open(seqFileOut, params.output_filename);
+	    seqan::open(seqFileOut, params.output_filename.c_str());
 
 	try {
         do {
@@ -130,19 +130,18 @@ int filter_test(int refTableLength){
 int reuse_build(int argc, char **argv){
 
     std::cerr << "Building reference......"<< std::endl;
-    ParametersBuild params;
-    if( 0!= parse_command_line_build( argc, argv, params)){
-        return -1;
-    }
+    bindopt::Options options;
+    ParametersBuild params(options);
+    bindopt::bindopt(argc, argv, options);
     std::cerr << "number of thread "<<params.threads<< std::endl;
 //    std::cout <<"input " << params.seq_filename<< std::endl;
 
     SeqFileIn seqfile;
 
-    if( !open(seqfile, params.seq_filename)){
-        std::cerr << "ERROR\n" << std::endl;
-        return -1;
-
+    if (params.seq_filename == "-") {
+        open(seqfile, std::cin);
+    } else {
+        open(seqfile, params.seq_filename.c_str());
     }
 
     StringSet<CharString> ids;
@@ -174,7 +173,7 @@ int reuse_build(int argc, char **argv){
     } catch (Exception const & e){
         std::cerr << "FILE ERROR" << e.what() << std::endl;
     }
-    table.save(params.output_filename);
+    table.save(params.output_filename.c_str());
  
 
     return 0;
@@ -185,13 +184,13 @@ int reuse_filter_singlecore(ParametersFilter &params){
     std::cerr << "Filtering sequence......"<< std::endl;
     std::cerr << "Single Core Run" << std::endl;
 
-    std::cerr <<"paired? " << (params.paired?"true":"false")<< std::endl;
+    std::cerr <<"paired? " << (params.seq_mate_filename.length()?"true":"false")<< std::endl;
     //TODO replace with input parameters
 
 
 
     BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,100,21); //TODO: properly instantiate and load from table file
-    table.load(params.index_filename);
+    table.load(params.index_filename.c_str());
 
     //Read in records to queue
     seqan::CharString id;
@@ -200,17 +199,17 @@ int reuse_filter_singlecore(ParametersFilter &params){
 
     //Call sequence stream function of seqan to read from the file
     seqan::SeqFileIn seqFileIn;
-    if (params.is_stdin)
+    if (params.seq_filename == "-")
         seqan::open(seqFileIn, std::cin);
     else
-        seqan::open(seqFileIn, params.seq_filename_1);
+        seqan::open(seqFileIn, params.seq_filename.c_str());
 
     seqan::SeqFileOut seqFileOut;
-    if (params.is_stdout){
+    if (params.output_filename == "-"){
         seqan::open(seqFileOut, std::cout);
     }
     else{
-        seqan::open(seqFileOut, params.output_filename);
+        seqan::open(seqFileOut, params.output_filename.c_str());
     }
 
     //Push record into queue
@@ -247,15 +246,17 @@ int reuse_filter_singlecore(ParametersFilter &params){
 int reuse_filter(int argc, char **argv){
     //Parse and validate parameters
     std::cerr << "Filtering sequence......"<< std::endl;
-    ParametersFilter params;
-    parse_command_line_filter( argc, argv, params);
+    bindopt::Options options;
+    ParametersFilter params(options);
+    bindopt::bindopt(argc, argv, options);
+
     if(params.threads == 1){
         reuse_filter_singlecore(params);
         return 0;
     }
     std::cerr << "number of thread "<<params.threads<< std::endl;
-    std::cerr <<"input " << params.seq_filename_1<< std::endl;
-    std::cerr <<"paired? " << params.paired<< std::endl;
+    std::cerr <<"input " << params.seq_filename << std::endl;
+    //std::cerr <<"paired? " << params.paired<< std::endl;
     //TODO replace with input parameters
     unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase, TODO replace with memory limit
     unsigned long total_records = 0, total_output = 0;
@@ -276,11 +277,11 @@ int reuse_filter(int argc, char **argv){
 
     //Call sequence stream function of seqan to read from the file
     seqan::SeqFileIn seqFileIn;
-    if (params.is_stdin) {
+    if (params.seq_filename == "-") {
         seqan::open(seqFileIn, std::cin);
     }
     else {
-        seqan::open(seqFileIn, params.seq_filename_1);
+        seqan::open(seqFileIn, params.seq_filename.c_str());
     }
 
     print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
