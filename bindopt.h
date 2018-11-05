@@ -82,18 +82,19 @@ namespace bindopt {
 
         virtual unsigned short parse(const std::string &str1, const std::string &str2) = 0;
         virtual bool is_flag() {return false;}
+        virtual bool is_positional() {return false;}
 
         bool operator==(const std::string& str) {
             return !str.empty() and ( //Ignore empty inputs
                     (str[0] == '-' and str[1] == short_name) //short name match
                     or (!str.compare(0, 2, "--") and !str.compare(2, name.find("=", 2), name)) //long name match
-                    or ((str.size() == 1 xor str[0] != '-') and name.empty())); // positional option match
+                    or ((str.size() == 1 xor str[0] != '-') and is_positional())); // positional option match
         }
 
     protected:
         std::string extract(const std::string &str1, const std::string &str2, unsigned short& consumed) {
             unsigned long start{0};
-            if (name.empty()) {
+            if (is_positional()) {
                 consumed = 1;
                 return str1;
             } else if (str1[0] == '-' and str1[1] == short_name) {
@@ -136,6 +137,14 @@ namespace bindopt {
         }
 
         bool is_flag() override { return true; }
+    };
+
+    template <typename T>
+    struct PositionalOption : BoundOption<T> {
+        using BoundOption<T>::BoundOption;
+        using BoundOption<T>::parse;
+
+        bool is_positional() override { return true; }
     };
 
     template <typename T>
@@ -197,12 +206,12 @@ namespace bindopt {
                                 break;
                         }
                     } catch (std::logic_error &e) {
-                        err += option->err + (option->name.empty() ? "(positional)" : (" \"" + option->name + "\"")) +
+                        err += option->err + (option->is_positional() ? "(positional)" : (" \"" + option->name + "\"")) +
                                ":\n\t" + e.what() + '\n';
                     }
 
             if (option->required and not found)
-                err += option->err + (option->name.empty() ? "(positional)" : (" \"" + option->name + "\"")) +
+                err += option->err + (option->is_positional() ? "(positional)" : (" \"" + option->name + "\"")) +
                        '\n';
         }
 
