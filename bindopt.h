@@ -78,7 +78,7 @@ namespace bindopt {
         const char short_name,
         const bool required,
         std::string desc,
-        std::string err) : name{name}, short_name{short_name}, required{required}, desc{desc}, err{err} {};
+        std::string err) : name{std::move(name)}, short_name{short_name}, required{required}, desc{std::move(desc)}, err{std::move(err)} {};
 
         virtual unsigned short parse(const std::string &str1, const std::string &str2) = 0;
         virtual bool is_flag() {return false;}

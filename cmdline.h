@@ -23,7 +23,8 @@ struct ParametersCommon {
     bool help;
 
     ParametersCommon();
-    ParametersCommon(bindopt::Options &options);
+
+    explicit ParametersCommon(bindopt::Options &options);
     void get_options(bindopt::Options &options);
 };
 
@@ -31,7 +32,7 @@ struct ParametersBuild : ParametersCommon {
     std::string mask;
 
 	ParametersBuild();
-	ParametersBuild(bindopt::Options &options);
+    explicit ParametersBuild(bindopt::Options &options);
 	void get_options(bindopt::Options &options);
 };
 
@@ -41,7 +42,7 @@ struct ParametersFilter : ParametersCommon {
 	unsigned int min_kmer_threshhold;
 
 	ParametersFilter();
-	ParametersFilter(bindopt::Options &options);
+    explicit ParametersFilter(bindopt::Options &options);
 	void get_options(bindopt::Options &options);
 };
 
