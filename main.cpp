@@ -337,11 +337,10 @@ int reuse_filter(int argc, char **argv){
 int main( int argc, char **argv) {
     if(strcmp(argv[1], "build")==0) {
         reuse_build(argc-2, argv+2);
-    }else if(strcmp(argv[1], "filter")==0){
+    } else if(strcmp(argv[1], "filter")==0) {
         reuse_filter(argc-2, argv+2);
-    }else{
+    } else {
         print_help();
-        reuse_exit(ExitSignal::IllegalArgumentError);
     }
     return 0;
 }

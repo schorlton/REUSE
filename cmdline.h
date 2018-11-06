@@ -4,8 +4,6 @@
 #include <vector>
 #include <string>
 
-#include "common.h"
-
 enum class CompressType { gzip, bzip2, uncompressed };
 CompressType operator<<(CompressType& val, const std::string& str);
 
