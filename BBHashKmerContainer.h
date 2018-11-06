@@ -3,7 +3,7 @@
 
 #include "AbstractKmerContainer.h"
 #include "./lib/BBHash/BooPHF.h"
-#include "kmers.h" 
+#include "KmerIterator.h"
 
 // from BBhash example
 #include <time.h>
