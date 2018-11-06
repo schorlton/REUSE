@@ -206,13 +206,11 @@ namespace bindopt {
                                 break;
                         }
                     } catch (std::logic_error &e) {
-                        err += option->err + (option->is_positional() ? "(positional)" : (" \"" + option->name + "\"")) +
-                               ":\n\t" + e.what() + '\n';
+                        err += option->err + " \"" + option->name + "\":\n\t" + e.what() + '\n';
                     }
 
             if (option->required and not found)
-                err += option->err + (option->is_positional() ? "(positional)" : (" \"" + option->name + "\"")) +
-                       '\n';
+                err += option->err + " \"" + option->name + "\"\n";
         }
 
         if (not err.empty())

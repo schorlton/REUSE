@@ -335,13 +335,6 @@ int reuse_filter(int argc, char **argv){
 }
 
 int main( int argc, char **argv) {
-    //Parse and validate parameters
-
-    if(argc == 1){
-        std::cerr << "Please have \"build\" or \"filter\" as argument" << std::endl;
-        print_help();
-        reuse_exit(ExitSignal::IllegalArgumentError);
-    }
     if(strcmp(argv[1], "build")==0) {
         reuse_build(argc-2, argv+2);
     }else if(strcmp(argv[1], "filter")==0){
