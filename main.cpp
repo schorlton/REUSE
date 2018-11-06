@@ -189,7 +189,7 @@ int reuse_filter_singlecore(ParametersFilter &params){
 
 
 
-    BBHashKmerContainer<KMerIterator<Dna5>,Dna5> table(1,2,100,21); //TODO: properly instantiate and load from table file
+    BBHashKmerContainer<KmerIterator<Dna5>,Dna5> table(1,2,100,21); //TODO: properly instantiate and load from table file
     table.load(params.index_filename.c_str());
 
     //Read in records to queue
