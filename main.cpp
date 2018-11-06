@@ -20,7 +20,7 @@ using namespace seqan;
 
 using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
-using KmerContainer = BBHashKmerContainer<KMerIterator<Dna5>,Dna5>;
+using KmerContainer = BBHashKmerContainer<KmerIterator<Dna5>,Dna5>;
 
 void print_filter_status(unsigned long pending_records, unsigned long output_records, unsigned long total_records,
                          unsigned long total_output) {
@@ -159,8 +159,8 @@ int reuse_build(int argc, char **argv){
 
     for(unsigned i = 0; i < length(ids) ; ++i){
 
-        KMerIterator<Dna5> _begin = get_begin(toCString(seqs[i]),21);
-        KMerIterator<Dna5> _end = get_end(toCString(seqs[i]),length(seqs[i]),21);
+        KmerIterator<Dna5> _begin = get_begin(toCString(seqs[i]),21);
+        KmerIterator<Dna5> _end = get_end(toCString(seqs[i]),length(seqs[i]),21);
 
         std::cerr << "Length : " << length(seqs[i]) << std::endl;
         table.addRange(_begin,_end);

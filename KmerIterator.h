@@ -8,24 +8,24 @@ using encode_type = unsigned long int;
 
 
 template <typename T>
-class KMerIterator;
+class KmerIterator;
 
 
 template <typename T>
-KMerIterator<T> get_begin(T *str, int k){
-    KMerIterator<T> iter(str,k);
+KmerIterator<T> get_begin(T *str, int k){
+    KmerIterator<T> iter(str,k);
     return iter;
 }
 
 template <typename T>
-KMerIterator<T> get_end(T *str, int length, int k){
-    KMerIterator<T> iter(str,k);
+KmerIterator<T> get_end(T *str, int length, int k){
+    KmerIterator<T> iter(str,k);
 
     return    iter+(length-k);
 }
 
 template <typename T>
-encode_type kmer_encode(KMerIterator<T> start, KMerIterator<T> end){
+encode_type kmer_encode(KmerIterator<T> start, KmerIterator<T> end){
     encode_type encoding = 0;
 
 
@@ -39,34 +39,34 @@ encode_type kmer_encode(KMerIterator<T> start, KMerIterator<T> end){
 }
 
 template <typename T>
-class KMerIterator{
+class KmerIterator{
     public:
-        KMerIterator(const T *str, int k){
+        KmerIterator(const T *str, int k){
             ptr = str;
             this->k = k;
 
         }
-        ~KMerIterator(){}
+        ~KmerIterator(){}
 
-        KMerIterator operator+=(int val){ 
-            KMerIterator i = *this; 
+        KmerIterator operator+=(int val){ 
+            KmerIterator i = *this; 
 
             ptr+=val; 
             return i;
         }
         
-        KMerIterator &operator++(){ 
+        KmerIterator &operator++(){ 
             ptr += 1; 
             return *this;
         }
-        KMerIterator operator++(int val){ 
-            KMerIterator i = *this; 
+        KmerIterator operator++(int val){ 
+            KmerIterator i = *this; 
             val = 1;
             ptr += val; 
             return i;
         }
         encode_type operator*(){
-            KMerIterator i = *this;
+            KmerIterator i = *this;
             return kmer_encode<T>(i,i+k);
 
         }
@@ -79,21 +79,21 @@ class KMerIterator{
             return ptr;
         }
 
-        bool operator==(const KMerIterator& rhs){
+        bool operator==(const KmerIterator& rhs){
             return ptr == rhs.ptr;
         }
 
-        bool operator!=(const KMerIterator& rhs){
+        bool operator!=(const KmerIterator& rhs){
             return ptr != rhs.ptr;
         }
         
-        KMerIterator operator+(int integer_value){
-            KMerIterator i = *this;
+        KmerIterator operator+(int integer_value){
+            KmerIterator i = *this;
             i.ptr+=integer_value;
             return i;
         }
-        KMerIterator operator-(int integer_value){
-            KMerIterator i = *this;
+        KmerIterator operator-(int integer_value){
+            KmerIterator i = *this;
             i.ptr-=integer_value;
             return i;
         }

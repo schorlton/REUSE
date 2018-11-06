@@ -80,7 +80,7 @@ BBHashKmerContainer<Iter, charType>::BBHashKmerContainer(int numThreads, double 
 template <typename Iter, typename charType>
 bool BBHashKmerContainer<Iter, charType>::contains(charType* s) {
 	//TODO change to seqan type
-    KMerIterator<charType> iter(s, kmers_size);
+    KmerIterator<charType> iter(s, kmers_size);
 	// kmer_encode(iter, iter+kmers_size);
 	//query mphf like this
 	uint64_t idx = bphf->lookup(kmer_encode(iter, iter+kmers_size));
