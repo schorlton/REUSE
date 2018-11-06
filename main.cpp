@@ -12,7 +12,7 @@
 #include "BBHashKmerContainer.h"
 #include "cmdline.h"
 #include "thread_util.h"
-#include "fastaRecord.h"
+#include "FastaRecord.h"
 #include "SharedQueue.h"
 
 
