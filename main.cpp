@@ -343,9 +343,9 @@ int main( int argc, char **argv) {
         reuse_exit(ExitSignal::IllegalArgumentError);
     }
     if(strcmp(argv[1], "build")==0) {
-        reuse_build(argc-1, argv+1);
+        reuse_build(argc-2, argv+2);
     }else if(strcmp(argv[1], "filter")==0){
-        reuse_filter(argc-1, argv+1);
+        reuse_filter(argc-2, argv+2);
     }else{
         print_help();
         reuse_exit(ExitSignal::IllegalArgumentError);
