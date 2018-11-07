@@ -25,7 +25,7 @@ public:
     ~BBHashKmerContainer() = default;
 
     // variable constructor
-    BBHashKmerContainer(int numThreads, double gammaFactor, int numElements, int k);
+    BBHashKmerContainer(int numThreads, double gammaFactor, int numElements, int kmer_size);
 
     bool contains(charType *s); //TODO change to seqan type
     void add(charType *s, int length); //TODO change to seqan type

@@ -28,7 +28,7 @@ BBHashKmerContainer<Iter, charType>::BBHashKmerContainer() : BBHashKmerContainer
 }
 
 template<typename Iter, typename charType>
-BBHashKmerContainer<Iter, charType>::BBHashKmerContainer(int numThreads, double gammaFactor, int numElements, int k) {
+BBHashKmerContainer<Iter, charType>::BBHashKmerContainer(int numThreads, double gammaFactor, int numElements, int kmer_size) {
     this->numThreads = numThreads;
     this->gammaFactor = gammaFactor;
     this->numElements = numElements;
