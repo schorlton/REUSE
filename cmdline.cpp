@@ -126,16 +126,17 @@ void print_help(){
                 ParametersCommon().get_options(options);
                 break;
             case 1:
-                std::cerr << std::endl << help_build << build_positional << std::endl << help_options << std::endl;
+                std::cerr << std::endl << help_build << build_positional << std::endl;
                 ParametersBuild().get_options(options);
                 break;
             case 2:
-                std::cerr << std::endl << help_filter << filter_positional << std::endl << help_options << std::endl;
+                std::cerr << std::endl << help_filter << filter_positional << std::endl;
                 ParametersFilter().get_options(options);
                 break;
             default:
                 return;
         }
+        std::cerr << help_options << std::endl;
         for (auto &option : options) {
             if (not option->is_positional())
                 std::cerr << "-" << option->short_name << "\t--" << std::left << std::setw(12) << option->name << "\t" << option->desc << std::endl;
