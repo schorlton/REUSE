@@ -3,6 +3,7 @@
 //
 
 #include <thread>
+#include <ctime>
 
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
@@ -19,6 +20,8 @@ using Record = FastaRecord;
 using Queue = SharedQueue<Record>;
 using KmerContainer = BBHashKmerContainer<KmerIterator<seqan::Dna5>, seqan::Dna5>;
 
+const double update_interval = 1; //Seconds
+
 void print_filter_status(unsigned long pending_records, unsigned long output_records, unsigned long total_records,
                          unsigned long total_output) {
     if (total_records)
@@ -29,7 +32,7 @@ void print_filter_status(unsigned long pending_records, unsigned long output_rec
             << " Total output: " << std::setw(10) << total_output << std::endl;
 }
 
-//Thread interface declaration
+//Thread functions
 void filter_thread(Queue &pending_records, Queue &output_records, KmerContainer &table, const ParametersFilter &params) {
     try {
         do {
@@ -74,15 +77,14 @@ int filter(ParametersFilter &params) {
     unsigned int queue_limit = 10; //Default soft limit for queue before thread pool increase, TODO replace with memory limit
     unsigned long total_records = 0, total_output = 0;
 
-    KmerContainer table(1, 2, 100, 21); //TODO: properly instantiate and load from table file
+    KmerContainer table(params.threads, 2, 100, params.kmer_length); //TODO: properly instantiate and load from table file
 
     //Init thread pool
     Queue pending_records, output_records;
     std::vector<std::thread> thread_pool;
-    auto t = thread_pool.emplace(thread_pool.end(), filter_thread, std::ref(pending_records), std::ref(output_records),
-                                 std::ref(table), std::ref(params));
+    auto t = thread_pool.emplace(thread_pool.end(), filter_thread, std::ref(pending_records), std::ref(output_records), std::ref(table), std::ref(params));
     increment_priority(*t, -1); //Lower priority of filter workers so not to interfere with IO
-    std::thread output_thread(output_thread, std::ref(output_records), std::ref(params), std::ref(total_output));
+    std::thread output_thread_instance(output_thread, std::ref(output_records), std::ref(params), std::ref(total_output));
 
     //Read in records to queue
     seqan::CharString id;
@@ -99,6 +101,7 @@ int filter(ParametersFilter &params) {
 
     print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
+    std::time_t last_time, now;
     //Push record into queue
     while (!atEnd(seqFileIn)) { // TODO: readRecord(id, seq, qual, seqStream) for fastq files
         try {
@@ -129,8 +132,11 @@ int filter(ParametersFilter &params) {
             //Wait for pending records to desaturate (Non-blocking size check)
             while (pending_records.size(false) > queue_limit);
         }
-        if (total_records % 100 == 0)
+        now = std::time(nullptr);
+        if (std::difftime(last_time, now) > update_interval) {
+            last_time = now;
             print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
+        }
 
         ++total_records;
     }
@@ -140,7 +146,7 @@ int filter(ParametersFilter &params) {
     pending_records.signal_done();
     for (auto &thread : thread_pool) thread.join();
     output_records.signal_done();
-    output_thread.join();
+    output_thread_instance.join();
 
     //Output final statistics
     print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);

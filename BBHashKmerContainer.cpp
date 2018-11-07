@@ -32,7 +32,7 @@ BBHashKmerContainer<Iter, charType>::BBHashKmerContainer(int numThreads, double 
     this->numThreads = numThreads;
     this->gammaFactor = gammaFactor;
     this->numElements = numElements;
-    kmers_size = k;
+    kmers_size = kmer_size;
     bphf = std::make_unique<boomphf::mphf<u_int64_t, hasher_t>>();
 }
 
