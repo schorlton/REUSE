@@ -1,5 +1,5 @@
-#ifndef KMER_ITERATOR
-#define KMER_ITERATOR
+#ifndef KMER_ITERATOR_H
+#define KMER_ITERATOR_H
 
 using encode_type = unsigned long int;
 
