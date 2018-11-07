@@ -45,7 +45,7 @@ int build(ParametersBuild &params) {
     }
 
     int refTableLength = length(seqs[0]) / 2 - 21;
-    KmerContainer table(1, 2, refTableLength, 21); //TODO replace hardcoded params
+    KmerContainer table(params.threads, 2, refTableLength, params.kmer_length); //TODO replace hardcoded params
 
     for (unsigned i = 0; i < length(ids); ++i) {
 
@@ -56,13 +56,6 @@ int build(ParametersBuild &params) {
         table.addRange(_begin, _end);
     }
 
-    try {
-        std::ofstream outputFile("data/test_filter_table", std::ios::binary);
-        outputFile.write((char *) &table, sizeof(table));
-        outputFile.close();
-    } catch (seqan::Exception const &e) {
-        std::cerr << "FILE ERROR" << e.what() << std::endl;
-    }
     table.save(params.output_filename.c_str());
 
 
