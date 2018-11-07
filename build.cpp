@@ -23,9 +23,6 @@ int build(ParametersBuild &params) {
 
     std::cerr << "Building reference......" << std::endl;
 
-    std::cerr << "number of thread " << params.threads << std::endl;
-//    std::cout <<"input " << params.seq_filename<< std::endl;
-
     seqan::SeqFileIn seqfile;
 
     if (params.seq_filename == "-") {
@@ -44,13 +41,13 @@ int build(ParametersBuild &params) {
         return 1;
     }
 
-    int refTableLength = length(seqs[0]) / 2 - 21;
+    int refTableLength = length(seqs[0]) / 2 - 21; //TODO document this line
     KmerContainer table(params.threads, 2, refTableLength, params.kmer_length); //TODO replace hardcoded params
 
     for (unsigned i = 0; i < length(ids); ++i) {
 
-        KmerIterator<seqan::Dna5> _begin = get_begin(toCString(seqs[i]), 21);
-        KmerIterator<seqan::Dna5> _end = get_end(toCString(seqs[i]), length(seqs[i]), 21);
+        KmerIterator<seqan::Dna5> _begin = get_begin(toCString(seqs[i]), params.kmer_length);
+        KmerIterator<seqan::Dna5> _end = get_end(toCString(seqs[i]), length(seqs[i]), params.kmer_length);
 
         std::cerr << "Length : " << length(seqs[i]) << std::endl;
         table.addRange(_begin, _end);
