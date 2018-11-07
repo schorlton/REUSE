@@ -2,6 +2,9 @@
 // Created by Nolan Woods on 11/6/2018.
 //
 
+#ifndef KMER_ITERATOR_CPP
+#define KMER_ITERATOR_CPP
+
 #include "KmerIterator.h"
 
 
@@ -99,3 +102,5 @@ KmerIterator<T> KmerIterator<T>::operator-(int integer_value) {
     i.ptr -= integer_value;
     return i;
 }
+
+#endif

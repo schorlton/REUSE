@@ -2,6 +2,9 @@
 // Created by Nolan Woods on 11/6/2018.
 //
 
+#ifndef BBHASHKMERCONTAINER_CPP
+#define BBHASHKMERCONTAINER_CPP
+
 #include <fstream>
 
 #include <memory>
@@ -79,3 +82,5 @@ void BBHashKmerContainer<Iter, charType>::addRange(Iter &start, Iter &end) {
     // free(data);
 
 }
+
+#endif
