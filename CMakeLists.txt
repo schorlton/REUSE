@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
 INCLUDE_DIRECTORIES(SYSTEM lib)
 
-add_executable(reuse main.cpp SharedQueue.h cmdline.cpp AbstractKmerContainer.h BBHashKmerContainer.h KmerIterator.h thread_util.cpp thread_util.h KmerIterator.cpp)
+add_executable(reuse main.cpp SharedQueue.h cmdline.cpp AbstractKmerContainer.h BBHashKmerContainer.h KmerIterator.h thread_util.cpp thread_util.h KmerIterator.cpp BBHashKmerContainer.cpp)
 
 find_package( ZLIB REQUIRED )
 if ( ZLIB_FOUND )
