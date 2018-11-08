@@ -205,6 +205,7 @@ namespace bindopt {
                             if (option->required) {
                                 --required_positionals;
                             } else {
+                                //Save parsing for after required positionals are fulfilled
                                 pending_optional_positionals.emplace_back(option.get(), *it);
                                 it = args.erase(it);
                                 continue;
@@ -224,7 +225,7 @@ namespace bindopt {
 
             if (option->required and not found) {
                 if (option->is_positional() and not pending_optional_positionals.empty()) {
-                    //Rob optional
+                    //Rob optional of argument
                     auto pending = (pending_optional_positionals.size() > required_positionals ? pending_optional_positionals.end()-required_positionals : pending_optional_positionals.begin());
                     option->parse(pending->second, "");
                     --required_positionals;

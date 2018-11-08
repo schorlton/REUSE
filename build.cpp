@@ -49,6 +49,8 @@ int build(ParametersBuild& params) {
     int refTableLength = length(seqs[0]) / 2 - 21; //TODO document this line
     KmerContainer table(params.threads, 2, refTableLength, params.kmer_length); //TODO replace hardcoded params
 
+    if (params.verbose) print_build_status(0, 0);
+
     //Generate and hash kmers
     std::time_t last_time{std::time(nullptr)}, now;
     for (unsigned long i = 0; i < length(ids); ++i) {
@@ -56,11 +58,11 @@ int build(ParametersBuild& params) {
         KmerIterator<seqan::Dna5> _begin = get_begin(toCString(seqs[i]), params.kmer_length);
         KmerIterator<seqan::Dna5> _end = get_end(toCString(seqs[i]), length(seqs[i]), params.kmer_length);
 
-        std::cerr << "Length : " << length(seqs[i]) << std::endl;
+        if (params.verbose) std::cerr << "Length : " << length(seqs[i]) << std::endl;
         table.addRange(_begin, _end);
 
         now = std::time(nullptr);
-        if (std::difftime(last_time, now) > update_interval) {
+        if (params.verbose and std::difftime(last_time, now) > update_interval) {
             last_time = now;
             print_build_status(i, 0); //TODO replace 0 with something meaningful
         }

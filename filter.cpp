@@ -38,15 +38,15 @@ void filter_thread(Queue &pending_records, Queue &output_records, KmerContainer 
         do {
             auto item = pending_records.pop();
             seqan::Dna5 *seq_c = toCString(item.seq);
+            unsigned int match_count{0};
             for (unsigned i = 0; i < length(item.seq) - params.kmer_length; i++) {
-                if (table.contains(seq_c + i)) goto SKIP_OUTPUT;
+                if (table.contains(seq_c + i) and ++match_count > params.min_kmer_threshhold) goto SKIP_OUTPUT;
             }
             output_records.push(std::move(item));
             SKIP_OUTPUT:
             continue;
         } while (true);
     } catch (Stop &e) {
-
     }
 }
 
@@ -99,7 +99,7 @@ int filter(ParametersFilter &params) {
         seqan::open(seqFileIn, params.seq_filename.c_str());
     }
 
-    print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
+    if (params.verbose) print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
     std::time_t last_time, now;
     //Push record into queue
@@ -133,7 +133,7 @@ int filter(ParametersFilter &params) {
             while (pending_records.size(false) > queue_limit);
         }
         now = std::time(nullptr);
-        if (std::difftime(last_time, now) > update_interval) {
+        if (params.verbose and std::difftime(last_time, now) > update_interval) {
             last_time = now;
             print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
         }
@@ -149,7 +149,7 @@ int filter(ParametersFilter &params) {
     output_thread_instance.join();
 
     //Output final statistics
-    print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
+    if (params.verbose) print_filter_status(pending_records.size(false), output_records.size(false), total_records, total_output);
 
     return 0;
 }

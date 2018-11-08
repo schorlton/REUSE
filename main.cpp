@@ -7,6 +7,7 @@ int filter(ParametersFilter& params);
 
 int main( int argc, char **argv) {
     bindopt::Options options;
+    //TODO implement --log --ram --mask --compression
     if(argc > 1 and strcmp(argv[1], "build")==0) {
         ParametersBuild params(options);
         bindopt::bindopt(argc-2, argv+2, options);
