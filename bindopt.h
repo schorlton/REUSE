@@ -170,10 +170,12 @@ namespace bindopt {
             args.emplace_back(argv[i]);
         }
 
-        //Split compound short args
+        //Split compound short args and count positionals
+        unsigned int required_positionals{0};
         std::set<char> flag_opts;
         std::set<char> val_opts;
-        for (auto& option : options)
+        for (auto& option : options) {
+            if (option->is_positional() and option->required) ++required_positionals;
             if (option->short_name) {
                 if (option->is_flag()) {
                     flag_opts.insert(option->short_name);
@@ -181,6 +183,7 @@ namespace bindopt {
                     val_opts.insert(option->short_name);
                 }
             }
+        }
 
         for (auto it{args.begin()}; it != args.end(); ++it) {
             if (it->length() > 2 and (*it)[0] == '-' and (*it)[1] != '-' and flag_opts.count((*it)[1])) {
@@ -191,12 +194,22 @@ namespace bindopt {
 
         //Parse options
         std::string err{};
+        std::vector<std::pair<Option*, std::string>> pending_optional_positionals;
         for (auto& option : options) {
             bool found{false};
             for (auto it{args.begin()}; it != args.end(); ++it)
                 if (*option == *it)
                     try {
                         found = true;
+                        if (option->is_positional()) {
+                            if (option->required) {
+                                --required_positionals;
+                            } else {
+                                pending_optional_positionals.emplace_back(option.get(), *it);
+                                it = args.erase(it);
+                                continue;
+                            }
+                        }
                         switch(option->parse(*it, *std::next(it))) {
                             case 2:
                                 it = args.erase(it);
@@ -209,9 +222,21 @@ namespace bindopt {
                         err += option->err + " \"" + option->name + "\":\n\t" + e.what() + '\n';
                     }
 
-            if (option->required and not found)
-                err += option->err + " \"" + option->name + "\"\n";
+            if (option->required and not found) {
+                if (option->is_positional() and not pending_optional_positionals.empty()) {
+                    //Rob optional
+                    auto pending = (pending_optional_positionals.size() > required_positionals ? pending_optional_positionals.end()-required_positionals : pending_optional_positionals.begin());
+                    option->parse(pending->second, "");
+                    --required_positionals;
+                    pending_optional_positionals.erase(pending);
+                } else {
+                    err += option->err + " \"" + option->name + "\"\n";
+                }
+            }
         }
+
+        //Finalize pending positionals
+        for (auto& pending : pending_optional_positionals) pending.first->parse(pending.second, "");
 
         if (not err.empty())
             throw std::invalid_argument{err};

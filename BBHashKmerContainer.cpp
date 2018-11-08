@@ -6,7 +6,6 @@
 #define BBHASHKMERCONTAINER_CPP
 
 #include <fstream>
-
 #include <memory>
 
 #include "BBHashKmerContainer.h"
